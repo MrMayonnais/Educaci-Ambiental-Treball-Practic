@@ -2,7 +2,7 @@ using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-/*public class DropZone : MonoBehaviour, IDropHandler
+public class DropZone : MonoBehaviour, IDropHandler
 {
     public int zoneIndex;
     public DragQuestionManager manager;
@@ -28,4 +28,4 @@ using UnityEngine.EventSystems;
         _currentItem = null;
     }
         
-}*/
+}

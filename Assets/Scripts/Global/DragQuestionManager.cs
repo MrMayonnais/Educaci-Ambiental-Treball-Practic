@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -7,15 +8,14 @@ using System.Linq;
 using Global;
 using Unity.VisualScripting;
 
-/*
+
 public class DragQuestionManager : BaseQuestionManager
 {
     [Header("UI References")]
-    public TMP_Text questionText;
+    public GameObject questionPanel;
     public GameObject feedbackPanel;
-    public TMP_Text feedbackText;
-    public Button nextButton;
-    public Button restartButton;
+    public GameObject nextButton;
+    public GameObject restartButton;
 
     [Header("Layouts")] 
     public GameObject layout4X4;
@@ -27,128 +27,167 @@ public class DragQuestionManager : BaseQuestionManager
     public Sprite incorrectSprite;
     
     private DragAndDropQuestion _currentQuestion;
-    private bool _answered = false;
-    private Dictionary<int, int> playerMatches = new Dictionary<int, int>();
+    private Dictionary<int, int> _playerMatches = new Dictionary<int, int>();
     private GameObject _currentLayout;
     private List<DraggableItem> _draggableItems = new List<DraggableItem>();
     private List<DropZone> _dropZones = new List<DropZone>();
+    
+    private Button _nextButton;
+    private Button _restartButton;
+    private TextMeshProUGUI _questionText;
+    private Button _questionButton;
+    private TextMeshProUGUI _feedbackText;
+    
 
     void OnEnable()
     {
-        LevelManager.GetInstance().OnQuestionLoaded += HandleQuestionLoaded;
+
     }
 
     void OnDisable()
     {
-        LevelManager.GetInstance().OnQuestionLoaded -= HandleQuestionLoaded;
+
     }
 
-    void Start()
+    private void Awake()
     {
-        nextButton.onClick.AddListener(OnNextButtonClicked);
-        restartButton.onClick.AddListener(OnRestartButtonClicked);
+        _nextButton = nextButton.GetComponent<Button>();
+        _restartButton = restartButton.GetComponent<Button>();
+        
+        _questionText = questionPanel.GetComponentInChildren<TextMeshProUGUI>();
+        _questionButton = _questionText.GetComponentInChildren<Button>();
+        
+        _feedbackText = feedbackPanel.GetComponentInChildren<TextMeshProUGUI>();
+    }
+
+    private void Start()
+    {
+        _nextButton.onClick.AddListener(OnNextButtonClicked);
+        _restartButton.onClick.AddListener(OnRestartButtonClicked);
         
         nextButton.gameObject.SetActive(false);
         restartButton.gameObject.SetActive(false);
         feedbackPanel.SetActive(false);
+        questionPanel.SetActive(false);
         
         layout4X4.SetActive(false);
         layout7X7.SetActive(false);
         layout9X9.SetActive(false);
     }
-    
-    void HandleQuestionLoaded(BaseQuestion question)
+
+    public override void LoadQuestion(BaseQuestion question)
     {
-        if (question is DragAndDropQuestion dragAndDropQuestion)
+        if (question is DragAndDropQuestion dragQuestion)
         {
-            _currentQuestion = dragAndDropQuestion;
+            _currentQuestion = dragQuestion;
             DisplayQuestion();
         }
+        else
+        {
+            Debug.LogError("Invalid question type passed to DragQuestionManager.");
+        }
     }
+    
 
-    void DisplayQuestion()
+    private void DisplayQuestion()
     {
-        _answered = false;
-        playerMatches.Clear();
+        _playerMatches.Clear();
         _draggableItems.Clear();
         _dropZones.Clear();
         
-        questionText.text = _currentQuestion.questionText;
+        _questionText.text = _currentQuestion.questionText;
         
         layout4X4.SetActive(false);
         layout7X7.SetActive(false);
         layout9X9.SetActive(false);
         
-        _currentLayout = GetlayoutForQuestionType(_currentQuestion.type);
+        _currentLayout = GetLayoutForQuestionType(_currentQuestion.type);
         _currentLayout.SetActive(true);
+        questionPanel.SetActive(true);
+        _questionButton.gameObject.SetActive(true);
         
-        Transform receptorsContainer = _currentLayout.transform.Find("DropZones");
-        Transform itemsContainer = _currentLayout.transform.Find("DraggableItems");
+        var receptorsContainer = _currentLayout.transform.Find("DropZones");
+        var itemsContainer = _currentLayout.transform.Find("DraggableItems");
         
 
-        for (int i = 0; i < _currentQuestion.DraggableItems.Count; i++)
+        for (var i = 0; i < _currentQuestion.DraggableItems.Count; i++)
         {
-            DraggableItem item = itemsContainer.GetChild(i).GetComponent<DraggableItem>();
+            var item = itemsContainer.GetChild(i).GetComponent<DraggableItem>();
             item.gameObject.SetActive(true);
             item.itemIndex = i;
             item.manager = this;
             item.ResetItem();
             
-            Image itemImage = item.GetComponent<Image>();
+            var itemImage = item.GetComponent<Image>();
             if (itemImage)
             {
-                Sprite sprite = Resources.Load<Sprite>("Sprites/" + _currentQuestion.DraggableItems[i]);
+                var sprite = Resources.Load<Sprite>("Sprites/" + _currentQuestion.DraggableItems[i]);
                 if (sprite)
                 {
                     itemImage.sprite = sprite;
                 }
-                else
+                else if(_currentQuestion.DraggableItems[i] == "")
                 {
                     itemImage.sprite = null;
-                    itemImage.color = Color.clear;
+                    itemImage.color = Color.clear;  
                 }
             }
             
-            TextMeshProUGUI itemText = item.GetComponentInChildren<TextMeshProUGUI>();
+            var itemText = item.GetComponentInChildren<TextMeshProUGUI>();
             if (itemText)
             {
                 itemText.text = _currentQuestion.DraggableTexts[i];
                 Debug.Log("Setting text for draggable item " + i + ": " + _currentQuestion.DraggableTexts[i]);
             }
+            
+            
+            var itemSpecialText = item.transform.Find("SpecialText")?.GetComponent<TextMeshProUGUI>();
+            if (itemSpecialText)
+            {
+                itemSpecialText.text = _currentQuestion.DraggableSpecialTexts[i];
+                Debug.Log("Setting special text for draggable item: " + i + " => " + _currentQuestion.DraggableSpecialTexts[i]);
+            }
             _draggableItems.Add(item);
             Debug.Log("Item added :"+item.name);
         }
         
-        for (int i = 0; i < _currentQuestion.Receptors.Count; i++)
+        for (var i = 0; i < _currentQuestion.Receptors.Count; i++)
         {
-            DropZone zone = receptorsContainer.GetChild(i).GetComponent<DropZone>();
-            zone.gameObject.SetActive(true);
-            zone.zoneIndex = i;
-            zone.manager = this;
-            zone.ClearItem();
+            var dropZone = receptorsContainer.GetChild(i).GetComponent<DropZone>();
+            dropZone.gameObject.SetActive(true);
+            dropZone.zoneIndex = i;
+            dropZone.manager = this;
+            dropZone.ClearItem();
             
-            Image zoneImage = zone.GetComponent<Image>();
+            var zoneImage = dropZone.GetComponent<Image>();
             if (zoneImage)
             {
-                Sprite sprite = Resources.Load<Sprite>("Sprites/" + _currentQuestion.Receptors[i]);
+                var sprite = Resources.Load<Sprite>("Sprites/" + _currentQuestion.Receptors[i]);
                 if (sprite)
                 {
                     zoneImage.sprite = sprite;
                 }
-                else
+                else if(_currentQuestion.Receptors[i] == "")
                 {
                     zoneImage.sprite = null;
                     zoneImage.color = Color.clear;
                 }
             }
             
-            TextMeshProUGUI zoneText = zone.GetComponentInChildren<TextMeshProUGUI>();
+            var zoneText = dropZone.GetComponentInChildren<TextMeshProUGUI>();
             if (zoneText)
             {
                 zoneText.text = _currentQuestion.ReceptorTexts[i];
             }
             
-            _dropZones.Add(zone);
+            var zoneSpecialText = dropZone.transform.Find("SpecialText")?.GetComponent<TextMeshProUGUI>();
+            if (zoneSpecialText)
+            {
+                zoneSpecialText.text = _currentQuestion.ReceptorSpecialTexts[i];
+                Debug.Log("Setting special text for dropzone: " + i + " => " + _currentQuestion.DraggableSpecialTexts[i]);
+            }
+            
+            _dropZones.Add(dropZone);
         }
 
         feedbackPanel.SetActive(false);
@@ -156,72 +195,33 @@ public class DragQuestionManager : BaseQuestionManager
         restartButton.gameObject.SetActive(false);
     }
 
-    GameObject GetlayoutForQuestionType(QuestionType type)
+    private GameObject GetLayoutForQuestionType(QuestionType type)
     {
-        switch (type)
+        return type switch
         {
-            case QuestionType.DragAndDrop4X4:
-                return layout4X4;
-            case QuestionType.DragAndDrop7X7:
-                return layout7X7;
-            case QuestionType.DragAndDrop9X9:
-                return layout9X9;
-            default:
-                return layout4X4;
-                
-        }
+            QuestionType.DragAndDrop4X4 => layout4X4,
+            QuestionType.DragAndDrop7X7 => layout7X7,
+            QuestionType.DragAndDrop9X9 => layout9X9,
+            _ => layout4X4
+        };
     }
-
-    void ShuffleList<T>(List<T> list)
-    {
-        for (int i = list.Count - 1; i > 0; i--)
-        {
-            int j = Random.Range(0, i + 1);
-            (list[i], list[j]) = (list[j], list[i]);
-        }
-    }
-
+    
     public void OnItemDropped(int itemIndex, int zoneIndex)
     {
-        // Verificar si el match es correcto
-        bool isCorrect = _currentQuestion.CorrectMatches.ContainsKey(itemIndex) && 
-                         _currentQuestion.CorrectMatches[itemIndex] == zoneIndex;
+        _playerMatches[itemIndex] = zoneIndex;
+        var isCorrect = CheckAnswer(itemIndex, zoneIndex);
 
-        if (!isCorrect)
-        {
-            // Match incorrecto - mostrar feedback y permitir reintentar
-            _answered = true;
-            feedbackText.text = _currentQuestion.IncorrectFeedback;
-            feedbackPanel.GetComponent<Image>().sprite = incorrectSprite;
-            feedbackPanel.SetActive(true);
+        if (!isCorrect) DisplayIncorrectFeedback();
         
-            // Deshabilitar interacción con todos los items
-            foreach (var item in _draggableItems)
-            {
-                item.GetComponent<CanvasGroup>().blocksRaycasts = false;
-            }
-        
-            restartButton.gameObject.SetActive(true);
-            return;
-        }
-
-        // Match correcto - registrar
-        playerMatches[itemIndex] = zoneIndex;
-
-        // Verificar si todos los items correctos han sido colocados
-        if (playerMatches.Count == _currentQuestion.CorrectMatches.Count)
+        else if (_playerMatches.Count == _currentQuestion.CorrectMatches.Count)
         {
-            CheckAllAnswers();
+            DisplayCorrectFeedback();
         }
     }
     
-    private void CheckAllAnswers()
+    private void DisplayCorrectFeedback()
     {
-        if (_answered) return;
-
-        _answered = true;
-
-        feedbackText.text = _currentQuestion.CorrectFeedback;
+        _feedbackText.text = _currentQuestion.CorrectFeedback;
         feedbackPanel.GetComponent<Image>().sprite = correctSprite;
         feedbackPanel.SetActive(true);
 
@@ -232,54 +232,45 @@ public class DragQuestionManager : BaseQuestionManager
 
         nextButton.gameObject.SetActive(true);
     }
-
-    private void CheckAnswers()
+    
+    private void DisplayIncorrectFeedback()
     {
-        if (_answered) return;
-
-        _answered = true;
-        bool allCorrect = true;
-
-        foreach (var match in playerMatches)
-        {
-            if (!_currentQuestion.CorrectMatches.ContainsKey(match.Key) ||
-                _currentQuestion.CorrectMatches[match.Key] != match.Value)
-            {
-                allCorrect = false;
-                break;
-            }
-        }
-
-        feedbackText.text = allCorrect ? 
-            _currentQuestion.CorrectFeedback : 
-            _currentQuestion.IncorrectFeedback;
-        
-        feedbackPanel.GetComponent<Image>().sprite = allCorrect ?
-            correctSprite :
-            incorrectSprite;
-        
+        _feedbackText.text = _currentQuestion.IncorrectFeedback;
+        feedbackPanel.GetComponent<Image>().sprite = incorrectSprite;
         feedbackPanel.SetActive(true);
-
-        foreach (var item in _draggableItems)
-        {
-            item.GetComponent<CanvasGroup>().blocksRaycasts = false;
-        }
-        
-        if (allCorrect)
-            nextButton.gameObject.SetActive(true);
-        else
-            restartButton.gameObject.SetActive(true);
     }
     
-    void OnNextButtonClicked()
+    private bool CheckAnswer(int itemIndex, int zoneIndex)
     {
-        LevelManager.GetInstance().NextQuestion();
+        return _currentQuestion.CorrectMatches[itemIndex] == zoneIndex;
+    }
+    
+    private void OnNextButtonClicked()
+    {
+        GameEvents.OnNextQuestion?.Invoke();
     }
 
-    void OnRestartButtonClicked()
+    private void OnRestartButtonClicked()
     {
         Debug.Log("Restarting level...");
-        LevelManager.GetInstance().RestartLevel();
+        GameEvents.OnRestartLevel?.Invoke();
+    }
+    
+    private void RestartGame()
+    {
+        _playerMatches.Clear();
+        DisplayQuestion();
+    }
+
+    private void EnableQuestionButton(bool enable)
+    {
+        _questionButton.interactable = enable;
+    }
+    
+    private void EnableLevelButtons(bool enable)
+    {
+        _nextButton.interactable = enable;
+        _restartButton.interactable = enable;
     }
 }
-*/
+

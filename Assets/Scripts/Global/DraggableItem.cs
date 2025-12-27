@@ -3,7 +3,7 @@ using Global;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-/*public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public int itemIndex;
     public DragQuestionManager manager;
@@ -17,12 +17,10 @@ using UnityEngine.EventSystems;
 
     private void OnEnable()
     {
-        LevelManager.OnRestartLevel += ReturnToOriginalPosition;
     }
     
     private void OnDisable()
     {
-        LevelManager.OnRestartLevel -= ReturnToOriginalPosition;
     }
     
     
@@ -99,4 +97,4 @@ using UnityEngine.EventSystems;
         _rectTransform.anchoredPosition = _originalPosition;
         _isPlaced = false;
     }
-}*/
+}

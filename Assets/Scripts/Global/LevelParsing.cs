@@ -81,89 +81,97 @@ public class LevelParsing
     
     public static LevelData ParseLevel2(string fileContent)
     {
-        LevelData levelData = new LevelData();
+        var levelData = new LevelData();
         levelData.questions = new List<BaseQuestion>();
 
-        string[] lines = fileContent.Split('\n');
+        var lines = fileContent.Split('\n');
 
-        // Primera línea es el nombre del nivel
+        // 1st line is level name (in quotes)
         levelData.levelName = lines[0].Trim('"', '\r');
 
-        int i = 1;
+        var i = 1;
         while (i < lines.Length)
         {
-            string line = lines[i].Trim();
+            var line = lines[i].Trim();
 
             // Detectar inicio de pregunta (nNombrePregunta)
             if (line.StartsWith("n"))
             {
-                DragAndDropQuestion question = new DragAndDropQuestion();
-                question.DraggableItems = new List<string>();
-                question.DraggableTexts = new List<string>();
-                question.Receptors = new List<string>();
-                question.ReceptorTexts = new List<string>();
-                question.CorrectMatches = new Dictionary<int, int>();
-
-                // Extraer nombre de pregunta
-                question.questionText = line.Substring(1);
+                var question = new DragAndDropQuestion
+                {
+                    DraggableItems = new List<string>(),
+                    DraggableTexts = new List<string>(),
+                    DraggableSpecialTexts = new List<string>(),
+                    Receptors = new List<string>(),
+                    ReceptorTexts = new List<string>(),
+                    ReceptorSpecialTexts = new List<string>(),
+                    CorrectMatches = new Dictionary<int, int>(),
+                    questionText = line[1..]
+                };
 
                 // Extraer número si existe
-                int numberEnd = 0;
+                var numberEnd = 0;
                 while (numberEnd < question.questionText.Length && char.IsDigit(question.questionText[numberEnd]))
                     numberEnd++;
 
                 if (numberEnd > 0)
                 {
-                    question.questionNumber = int.Parse(question.questionText.Substring(0, numberEnd));
-                    question.questionText = question.questionText.Substring(numberEnd);
+                    question.questionNumber = int.Parse(question.questionText[1..numberEnd]);
+                    question.questionText = question.questionText[^numberEnd..];
                 }
 
                 i++;
-                int receptorIndex = 0;
-                int draggableIndex = 0;
+                var receptorIndex = 0;
+                var draggableIndex = 0;
 
                 // Leer pares de imágenes (a1/a2, b1/b2, c1/c2, d1/d2, etc.)
                 while (i < lines.Length && !string.IsNullOrWhiteSpace(lines[i].Trim()))
                 {
-                    string pairLine = lines[i].Trim();
+                    var pairLine = lines[i].Trim();
 
                     if (pairLine.StartsWith("+"))
                     {
-                        question.CorrectFeedback = pairLine.Substring(1);
+                        question.CorrectFeedback = pairLine[1..];
                         i++;
                     }
                     else if (pairLine.StartsWith("-"))
                     {
-                        question.IncorrectFeedback = pairLine.Substring(1);
+                        question.IncorrectFeedback = pairLine[1..];
                         i++;
                         break; // Fin de la pregunta
                     }
                     else if (pairLine.Length > 2 && char.IsLetter(pairLine[0]))
                     {
-                        char letter = pairLine[0];
-                        char number = pairLine[1];
+                        var letter = pairLine[0];
+                        var number = pairLine[1];
 
                         // Remover letra y número, obtener datos
-                        string data = pairLine.Substring(2);
-                        string[] parts = data.Split('_');
+                        var parts = pairLine[2..].Split('_');
 
-                        string imageName = parts.Length > 0 ? parts[0].Trim() : "";
-                        string text = parts.Length > 1 ? parts[1].Trim('"', ' ') : "";
+                        var imageName = parts.Length > 0 ? parts[0].Trim():"";
+                        var textParts = parts.Length > 1 ? parts[1].Trim('"', ' ').Split(',') : null;
+
+                        var text = "";
+                        var specialText = "";
+                        
+                        if(textParts != null) (text, specialText) = (textParts[0].Trim(), textParts[1].Trim());
 
                         // Si nombre y texto están vacíos, es un objeto invisible
-                        bool isEmpty = string.IsNullOrEmpty(imageName) && string.IsNullOrEmpty(text);
+                        var isEmpty = string.IsNullOrEmpty(imageName) && string.IsNullOrEmpty(text);
 
                         if (number == '1') // Receptor (DropZone)
                         {
                             question.Receptors.Add(imageName);
                             question.ReceptorTexts.Add(text);
+                            question.ReceptorSpecialTexts.Add(specialText);
                             receptorIndex++;
-                            Debug.Log("added receptor " + receptorIndex + ": " + imageName + " / " + text);
+                            Debug.Log("added receptor " + receptorIndex + ": " + imageName + " / " + text +", " + specialText);
                         }
                         else if (number == '2') // DraggableItem
                         {
                             question.DraggableItems.Add(imageName);
                             question.DraggableTexts.Add(text);
+                            question.DraggableSpecialTexts.Add(specialText);
                             
                             // Solo crear match si no está vacío
                             if (!isEmpty)
@@ -174,7 +182,7 @@ public class LevelParsing
                             }
                             
                             draggableIndex++;
-                            Debug.Log("added draggable " + draggableIndex + ": " + imageName + " / " + text);
+                            Debug.Log("added draggable " + draggableIndex + ": " + imageName + " / " + text +", " + specialText);
                         }
 
                         i++;

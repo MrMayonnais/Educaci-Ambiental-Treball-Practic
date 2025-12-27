@@ -64,7 +64,6 @@ namespace Global
         
         private void LoadQuestion(BaseQuestion question)
         {
-            Debug.Log("Loading Question on "+_currentManager.name);
             _currentManager.LoadQuestion(question);
         }
     
