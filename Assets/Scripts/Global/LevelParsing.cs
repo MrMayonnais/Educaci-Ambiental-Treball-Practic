@@ -149,7 +149,7 @@ public class LevelParsing
                         var parts = pairLine[2..].Split('_');
 
                         var imageName = parts.Length > 0 ? parts[0].Trim():"";
-                        var textParts = parts.Length > 1 ? parts[1].Trim('"', ' ').Split(',') : null;
+                        var textParts = parts.Length > 1 ? parts[1].Trim('"', ' ').Split('$') : null;
 
                         var text = "";
                         var specialText = "";

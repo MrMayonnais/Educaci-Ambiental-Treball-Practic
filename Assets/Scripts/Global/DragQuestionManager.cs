@@ -88,7 +88,6 @@ public class DragQuestionManager : BaseQuestionManager
         }
     }
     
-
     private void DisplayQuestion()
     {
         _playerMatches.Clear();
