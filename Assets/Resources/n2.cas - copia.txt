@@ -1,0 +1,12 @@
+"N2"
+n1¡El Gaià podría estar en peligro! Las Figuras de Protección son escudos legales que lo defienden. Arrastra correctamente cada logo de la figura de protección que corresponde al problema para proteger el río, puedes consultar el cuaderno de campo para saber más sobre las figuras de protección
+a1PaisajeConstruido_""
+a2Penin_""
+b1PaisajeCohetes_""
+b2Zepa_""
+c1PaisajeInvasoras_""
+c2Custodia_""
+d1PaisajeCazadores_""
+d2Refujio""
++¡Felicidades! Gaià te agradece la protección
+-Vuelve a intentarlo, recuerda que puedes consultar el cuaderno de campo

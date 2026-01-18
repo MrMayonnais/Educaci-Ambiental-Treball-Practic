@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Global
 {
@@ -6,5 +7,9 @@ namespace Global
     {
         public static Action OnRestartLevel;
         public static Action OnNextQuestion;
+        public static Action<DropZone> AppearDropZoneImage;
+        public static Action<DraggableItem> ForceItemReturn;
+        public static Action<DropZone> ForceDisappearDropZoneImage;
+
     }
 }

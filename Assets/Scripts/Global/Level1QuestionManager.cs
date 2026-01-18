@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class MultipleChoiceQuestionManager : BaseQuestionManager
+public class Level1QuestionManager : BaseQuestionManager
 {
     private static readonly int DisplayAnimation = Animator.StringToHash("Display");
     public GameObject questionPanel;
@@ -40,7 +40,6 @@ public class MultipleChoiceQuestionManager : BaseQuestionManager
     
     public override void LoadQuestion(BaseQuestion question)
     {
-        Debug.Log("LoadQuestion");
         
         if (question is MultiChoiceQuestion multiChoice)
         {

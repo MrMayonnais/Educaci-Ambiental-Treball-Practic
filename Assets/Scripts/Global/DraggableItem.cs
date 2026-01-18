@@ -2,30 +2,33 @@ using System;
 using Global;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public int itemIndex;
-    public DragQuestionManager manager;
-    
     private Canvas _canvas;
     private RectTransform _rectTransform;
     private CanvasGroup _canvasGroup;
     private Vector2 _originalPosition;
     private Transform _originalParent;
     private bool _isPlaced;
+    
+    public static Action<DraggableItem, DropZone> OnItemDropped;
 
     private void OnEnable()
     {
+        GameEvents.ForceItemReturn += CheckReturn;
     }
     
     private void OnDisable()
     {
+        GameEvents.ForceItemReturn -= CheckReturn;
     }
-    
     
     private void Awake()
     {
+        _originalParent = transform.parent;
+        _originalPosition = transform.position;
         _rectTransform = GetComponent<RectTransform>();
         _canvasGroup = GetComponent<CanvasGroup>();
         if (!_canvasGroup) _canvasGroup = gameObject.AddComponent<CanvasGroup>();
@@ -36,10 +39,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (_isPlaced) return;
         
-        _originalPosition = _rectTransform.anchoredPosition;
-        _originalParent = transform.parent;
-        
-        _canvasGroup.alpha = 0.6f;
         _canvasGroup.blocksRaycasts = false;
         
         transform.SetParent(_canvas.transform);
@@ -48,53 +47,63 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnDrag(PointerEventData eventData)
     {
         if (_isPlaced) return;
-        _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
+    
+        // Usar la posición del puntero directamente en lugar de delta
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _canvas.transform as RectTransform,
+            eventData.position,
+            _canvas.worldCamera,
+            out Vector2 localPoint
+        );
+    
+        _rectTransform.anchoredPosition = localPoint;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         if (_isPlaced) return;
-
-        _canvasGroup.alpha = 1f;
+        
         _canvasGroup.blocksRaycasts = true;
 
-        // Buscar DropZone en el objeto sobre el que se soltó (pointerEnter)
         DropZone dropZone = null;
         if (eventData.pointerEnter != null)
         {
             dropZone = eventData.pointerEnter.GetComponent<DropZone>();
-            Debug.Log(dropZone);
         }
 
         if (dropZone != null && !dropZone.HasItem())
         {
-            Debug.Log("Dropped on drop zone " + dropZone.zoneIndex);
+            Debug.Log("Dropped on drop zone " + dropZone.name);
             transform.SetParent(dropZone.transform);
             _rectTransform.anchoredPosition = Vector2.zero;
             _isPlaced = true;
             dropZone.SetITem(this);
-            manager.OnItemDropped(itemIndex, dropZone.zoneIndex);
+            OnItemDropped?.Invoke(this, dropZone);
         }
         else
         {
-            Debug.Log("Returning to original position");
-            transform.SetParent(_originalParent);
-            _rectTransform.anchoredPosition = _originalPosition;
+            ReturnToOriginalPosition();
         }
     }
-
-    public void ResetItem()
+    
+    private void CheckReturn(DraggableItem item)
     {
-        _isPlaced = false;
-        _canvasGroup.alpha = 1f;
-        _canvasGroup.blocksRaycasts = true;
+        if (item == this && _isPlaced)
+        {
+            ReturnToOriginalPosition();
+        }
     }
     
-    public void ReturnToOriginalPosition()
+    private void ReturnToOriginalPosition()
     {
-        Debug.Log("Returning to original position");
+        gameObject.SetActive(true);
+        
         transform.SetParent(_originalParent);
-        _rectTransform.anchoredPosition = _originalPosition;
+        _rectTransform.position = _originalPosition;
         _isPlaced = false;
+        _canvasGroup.blocksRaycasts = true;
+        var c = GetComponent<Image>().color;
+        c.a = 1f;
+        GetComponent<Image>().color = c;
     }
 }

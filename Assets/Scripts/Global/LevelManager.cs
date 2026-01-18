@@ -6,8 +6,8 @@ namespace Global
     public class LevelManager : MonoBehaviour
     {
         [Header("Question Managers")]
-        public MultipleChoiceQuestionManager multiChoiceManager;
-        //public DragQuestionManager dragQuestionManager;
+        public Level1QuestionManager level1QuestionManager;
+        public Level2QuestionManager level2QuestionManager;
     
         [Header("Level Configuration")]
         public TextAsset level1File; // Archivo .txt para nivel 1
@@ -64,7 +64,9 @@ namespace Global
         
         private void LoadQuestion(BaseQuestion question)
         {
-            _currentManager.LoadQuestion(question);
+            if(_currentManager is Level2QuestionManager _mL)
+                _mL.DisplayQuestion(_currentQuestionIndex);
+            else _currentManager.LoadQuestion(question);
         }
     
         private void LoadCurrentQuestion()
@@ -90,7 +92,7 @@ namespace Global
             _currentLevelIndex++;
             if (_currentLevelIndex < LevelAmount - 1)
             {
-                //LoadMinigame();
+                LoadNextGame();
             }
             else
             {
@@ -106,49 +108,37 @@ namespace Global
         }
         
         private void DeactivateAllManagers()
-                {
-                    if (multiChoiceManager != null)
-                        multiChoiceManager.gameObject.SetActive(false);
-                    // if (dragQuestionManager != null)
-                    //     dragQuestionManager.gameObject.SetActive(false);
-                }
-        
-        private void ActivateManagerForQuestion(BaseQuestion question)
-                {
-                    switch (question.type)
-                    {
-                        case QuestionType.MultipleChoice:
-                            if (multiChoiceManager != null)
-                                multiChoiceManager.gameObject.SetActive(true);
-                            break;
-                        
-                        // case QuestionType.DragAndDrop4X4:
-                        // case QuestionType.DragAndDrop7X7:
-                        // case QuestionType.DragAndDrop9X9:
-                        //     if (dragQuestionManager != null)
-                        //         dragQuestionManager.gameObject.SetActive(true);
-                        //     break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
+        {
+            if (level1QuestionManager != null)
+                level1QuestionManager.gameObject.SetActive(false);
+            if (level2QuestionManager != null)
+                level2QuestionManager.gameObject.SetActive(false);
+        }
         
         private BaseQuestionManager GetCurrentManager()
         {
             DeactivateAllManagers();
-            ActivateManagerForQuestion(_currentQuestion);
             switch (_currentQuestion.type)
             {
                 case QuestionType.MultipleChoice:
-                    return multiChoiceManager;
-                // case QuestionType.DragAndDrop4X4:
-                // case QuestionType.DragAndDrop7X7:
-                // case QuestionType.DragAndDrop9X9:
-                //     return dragQuestionManager;
+                    level1QuestionManager.gameObject.SetActive(true);
+                    return level1QuestionManager;
+                case QuestionType.DragAndDrop:
+                    level2QuestionManager.gameObject.SetActive(true);
+                    return level2QuestionManager;
                 default:
                     Debug.LogWarning("Tipo de pregunta no soportado: " + _currentQuestion.type);
                     return null;
             }
+        }
+
+        private void LoadNextGame()
+        {
+            _currentLevel = ParseLevel(_currentLevelIndex);
+            _currentQuestionIndex = 0;
+            _currentQuestion = _currentLevel.questions[_currentQuestionIndex];
+            _currentManager = GetCurrentManager();
+            LoadCurrentQuestion();
         }
     }
 }

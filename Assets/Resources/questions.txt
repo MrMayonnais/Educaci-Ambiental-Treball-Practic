@@ -7,29 +7,3 @@ d90%
 [b]
 +¡Correcto! Los océanos cubren aproximadamente el 71% de la superficie terrestre.
 -Incorrecto. Los océanos cubren el 71% de nuestro planeta.
-n2¿Cuál es la criatura más grande del océano?
-aTiburón blanco
-bBallena azul
-cCalamar gigante
-dOrca
-[b]
-+¡Correcto! La ballena azul es el animal más grande que vive en los océanos.
--Incorrecto. La ballena azul es la más grande.
-
-n3¿Qué proceso realizan los organismos microscópicos como el fitoplancton y que sustenta la base de la cadena alimentaria marina?
-aFotosíntesis
-bFermentación
-cFijación de nitrógeno
-dRespiración
-[a]
-+¡Correcto! El fitoplancton realiza fotosíntesis y produce oxígeno y materia orgánica.
--Incorrecto. El fitoplancton realiza fotosíntesis, no la opción elegida.
-
-n4¿Cuál de estos fenómenos es típico de aguas frías y ricas en nutrientes, favoreciendo la productividad marina?
-aArrecifes de coral
-bPraderas marinas
-cZonas de afloramiento
-dManglares
-[c]
-+¡Correcto! Las zonas de afloramiento traen nutrientes desde aguas profundas.
--Incorrecto. Las zonas de afloramiento son las que aportan nutrientes, no la opción elegida.
