@@ -66,6 +66,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _canvasGroup.blocksRaycasts = true;
 
         DropZone dropZone = null;
+        
         if (eventData.pointerEnter != null)
         {
             dropZone = eventData.pointerEnter.GetComponent<DropZone>();

@@ -73,8 +73,8 @@ public class DropZone : MonoBehaviour, IDropHandler
         }
         
         
-        var image = Dlcs.Extensions.GetChildByName(gameObject, "image").GetComponent<Image>();
-        imageTween = Tween.Color(image, endValue: new Color(1,1,1,1), duration: 0.5f);
+        var image = Dlcs.Extensions.GetChildByName(gameObject, "image")?.GetComponent<Image>();
+        if(image)imageTween = Tween.Color(image, endValue: new Color(1,1,1,1), duration: 0.5f);
     }
 
     private void HideImage(DropZone dropZone)

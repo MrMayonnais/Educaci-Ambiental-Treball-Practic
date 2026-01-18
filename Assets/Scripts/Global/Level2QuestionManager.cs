@@ -64,7 +64,6 @@ namespace Global
 
         private void Start()
         {
-            // Get or add Animation component
             _animation = GetComponent<Animation>();
             if (!_animation)
             {
@@ -117,12 +116,10 @@ namespace Global
                 3 => layout4,
                 _ => layout1
             };
-            Debug.Log("TriggeringDisplay for Layout " + questionN);
             
             var clipName = $"DisplayLayout{questionN+1}";
             if (_animation.GetClip(clipName))
             {
-                Debug.Log("Playing Animation Clip: " + clipName);
                 _animation.Play(clipName);
             }
             
@@ -141,10 +138,12 @@ namespace Global
         {
             _dropZones = _currentLayout.GetComponentsInChildren<DropZone>().ToList();
             _draggableItems = _currentLayout.GetComponentsInChildren<DraggableItem>().ToList();
+            _currentCorrectMatches = new Dictionary<DropZone, List<DraggableItem>>();
 
             foreach (var dropZone in _dropZones)
             {
                 _currentCorrectMatches.Add(dropZone, dropZone.GetCorrectItems());
+                Debug.Log("DropZone: " + dropZone.name + " has " + _currentCorrectMatches[dropZone].Count + " correct items.");
             }
         }
 
@@ -169,14 +168,16 @@ namespace Global
 
         private void OnItemDropped(DraggableItem item, DropZone zone)
         {
-
+            Debug.Log("Dropped on drop zone " + zone.name);
+            
             if(!_currentCorrectMatches[zone].Contains(item))
             { 
+                Debug.Log("Incorrect drop detected---current_value: " + _correctDrops + "---total_needed: " + _currentCorrectMatches.Count);
                 DisplayIncorrectFeedback();
             }
             else
             {
-                Debug.Log("Correct drop detected---updating state---current_value: " + _correctDrops+ "---total_needed: " + _currentCorrectMatches.Count);
+                Debug.Log("Correct drop detected---updating state---current_value: " + _correctDrops+1+ "---total_needed: " + _currentCorrectMatches.Count);
                 _correctDrops++;
 
                 GameEvents.AppearDropZoneImage?.Invoke(zone);
@@ -186,6 +187,8 @@ namespace Global
                     DisplayCorrectFeedback();
                 }
             }
+            
+            Debug.Log("Current correct drops: " + _correctDrops + " out of " + _currentCorrectMatches.Count);
         }
         
         private void DisplayIncorrectFeedback()
@@ -227,6 +230,8 @@ namespace Global
         
         private void OnNextButtonClicked()
         {
+            _currentCorrectMatches = new Dictionary<DropZone, List<DraggableItem>>();
+            _correctDrops = 0;
             GameEvents.OnNextQuestion?.Invoke();
         }
         
