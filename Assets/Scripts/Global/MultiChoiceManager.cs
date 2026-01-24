@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Level1QuestionManager : BaseQuestionManager
+public class MultiChoiceManager : BaseQuestionManager
 {
     private static readonly int DisplayAnimation = Animator.StringToHash("Display");
     public GameObject questionPanel;
@@ -63,7 +63,7 @@ public class Level1QuestionManager : BaseQuestionManager
     void CheckAnswer(char selectedOption)
     {
         
-        var isCorrect = selectedOption == _currentQuestion.correctAnswer;
+        var isCorrect = selectedOption == _currentQuestion.Correct;
 		
         AnimateResult(isCorrect);
     }
@@ -72,14 +72,14 @@ public class Level1QuestionManager : BaseQuestionManager
     {
         if(result)
         {
-            feedbackPanel.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.correctFeedback;
+            feedbackPanel.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.CorrectFeedback;
             feedbackPanel.GetComponent<Image>().sprite = correctSprite;
             _animator.SetTrigger("ShowCorrectFeedback");
             nextButton.gameObject.SetActive(true);
         }
         else
         {
-            feedbackPanel.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.incorrectFeedback;
+            feedbackPanel.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.IncorrectFeeback;
             feedbackPanel.GetComponent<Image>().sprite = incorrectSprite;
             _animator.SetTrigger("ShowIncorrectFeedback");
             restartButton.gameObject.SetActive(true);
@@ -128,10 +128,10 @@ public class Level1QuestionManager : BaseQuestionManager
 
     private void SetAllText()
     {
-        optionA.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.optionA;
-        optionB.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.optionB;
-        optionC.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.optionC;
-        optionD.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.optionD;
+        optionA.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.OptionA;
+        optionB.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.OptionB;
+        optionC.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.OptionC;
+        optionD.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.OptionD;
         
         questionPanel.GetComponentInChildren<TextMeshProUGUI>().text = _currentQuestion.questionText;
         feedbackPanel.GetComponentInChildren<TextMeshProUGUI>().text = "";

@@ -4,11 +4,9 @@ using TMPro;
 
 public class MultiChoiceQuestion : BaseQuestion
 {
-    public string optionA;
-    public string optionB;
-    public string optionC;
-    public string optionD;
-    public char correctAnswer; // 'a', 'b', 'c', 'd'
-    public string correctFeedback;
-    public string incorrectFeedback;
+    public string OptionA { get; set; }
+    public string OptionB { get; set; }
+    public string OptionC  { get; set; }
+    public string OptionD  { get; set; }
+    public char CorrectAnswer { get; set; }
 }

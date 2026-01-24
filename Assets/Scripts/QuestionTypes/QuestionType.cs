@@ -3,4 +3,6 @@ public enum QuestionType
 {
     MultipleChoice,
     DragAndDrop,
+    Puzzle,
+    TrueFalse
 }

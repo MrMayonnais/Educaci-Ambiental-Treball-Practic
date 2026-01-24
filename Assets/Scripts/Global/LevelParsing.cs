@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Global.Types;
+using NUnit.Framework;
 using UnityEngine;
 
 public class LevelParsing
 {
-    public static LevelData ParseLevel1(string fileContent)
+    /*public static LevelData ParseLevel1(string fileContent)
     {
         LevelData levelData = new LevelData();
         levelData.questions = new List<BaseQuestion>();
@@ -45,28 +48,28 @@ public class LevelParsing
                 
                 // Leer opciones (a, b, c, d)
                 if (i < lines.Length && lines[i].Trim().StartsWith("a"))
-                    question.optionA = lines[i++].Trim().Substring(1);
+                    question.OptionA = lines[i++].Trim().Substring(1);
                 if (i < lines.Length && lines[i].Trim().StartsWith("b"))
-                    question.optionB = lines[i++].Trim().Substring(1);
+                    question.OptionB = lines[i++].Trim().Substring(1);
                 if (i < lines.Length && lines[i].Trim().StartsWith("c"))
-                    question.optionC = lines[i++].Trim().Substring(1);
+                    question.OptionC = lines[i++].Trim().Substring(1);
                 if (i < lines.Length && lines[i].Trim().StartsWith("d"))
-                    question.optionD = lines[i++].Trim().Substring(1);
+                    question.OptionD = lines[i++].Trim().Substring(1);
                 
                 // Leer respuesta correcta [letra]
                 if (i < lines.Length && lines[i].Trim().StartsWith("["))
                 {
                     string answerLine = lines[i++].Trim();
-                    question.correctAnswer = answerLine.Trim('[', ']', '\r')[0];
+                    question.Correct = answerLine.Trim('[', ']', '\r')[0];
                 }
                 
                 // Leer feedback correcto (+texto)
                 if (i < lines.Length && lines[i].Trim().StartsWith("+"))
-                    question.correctFeedback = lines[i++].Trim().Substring(1);
+                    question.CorrectFeedback = lines[i++].Trim().Substring(1);
                 
                 // Leer feedback incorrecto (-texto)
                 if (i < lines.Length && lines[i].Trim().StartsWith("-"))
-                    question.incorrectFeedback = lines[i++].Trim().Substring(1);
+                    question.IncorrectFeeback = lines[i++].Trim().Substring(1);
                 
                 levelData.questions.Add(question);
             }
@@ -100,5 +103,118 @@ public class LevelParsing
         levelData.questions = new List<BaseQuestion>();
         Debug.LogWarning("Formato de Nivel 3 aún no definido");
         return levelData;
+    }*/
+
+
+    public GameData ParseAllQuestions(string fileContent)
+    {
+        var gameData = new GameData
+        {
+            Levels = new List<LevelData>()
+        };
+        
+        var questionBlocks = fileContent.Split(new[] { "//" }, System.StringSplitOptions.RemoveEmptyEntries);
+
+        var questions = new List<BaseQuestion>();
+        
+        foreach (var block in questionBlocks)
+        {
+            questions.Add(ParseQuestionBlock(block));
+        }
+
+
+        gameData = SortQuestionsIntoLevels(questions);
+        
+        
+        return gameData;
+    }
+    
+    public DragAndDropQuestion ParseDragNDropQuestion(string[] lines, int currentIndex)
+    {
+        DragAndDropQuestion question = new DragAndDropQuestion();
+        
+        // Implementar parsing específico para DragAndDropQuestion aquí
+        
+        return question;
+    }
+    
+    public MultiChoiceQuestion ParseMultiChoiceQuestion(string[] lines, int currentIndex)
+    {
+        MultiChoiceQuestion question = new MultiChoiceQuestion();
+
+        for (int i = currentIndex; i < lines.Length; i++)
+        {
+            var line = lines[i];
+
+            if (line.StartsWith("#")) question.QuestionText = line.Trim('#');
+            else if (line.StartsWith("a")) question.OptionA = line.Trim('a').Trim();
+            else if (line.StartsWith("b")) question.OptionB = line.Trim('b').Trim();
+            else if (line.StartsWith("c")) question.OptionC = line.Trim('c').Trim();
+            else if (line.StartsWith("d")) question.OptionD = line.Trim('d').Trim();
+            else if (line.StartsWith("?")) question.CorrectAnswer = line.Trim('?').Trim()[0];
+            else if (line.StartsWith("+")) question.CorrectFeedback = line.Trim('+').Trim();
+            else if (line.StartsWith("-")) question.IncorrectFeedback = line.Trim('-').Trim();
+        }
+        
+        return question;
+    }
+
+    private BaseQuestion ParseQuestionBlock(string block)
+    {
+        BaseQuestion question = new BaseQuestion();
+
+        var lines = block.Split(new[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            var line = lines[i];
+        
+            if (line.StartsWith("*"))
+            {
+                var parts = line.Trim('*').Split('.');
+                question.LevelNumber = int.Parse(parts[0]);
+                question.QuestionNumber = int.Parse(parts[1]);
+            }
+
+            if (line.StartsWith("!"))
+            {
+                var typePart = line.Trim('!').Trim();
+
+                if (typePart == "M")
+                {
+                    question = ParseMultiChoiceQuestion(lines, i);
+                }
+                else if (typePart == "D")
+                {
+                    question = ParseDragNDropQuestion(lines, i);
+                }
+            }
+        }
+
+        return question;
+    }
+    
+    private GameData SortQuestionsIntoLevels(List<BaseQuestion> questions)
+    {
+        var gameData = new GameData
+        {
+            Levels = new List<LevelData>()
+        };
+
+        foreach (var question in questions)
+        {
+            if (gameData.Levels.Last() == null || gameData.Levels.Last().LevelNumber != question.LevelNumber)
+            {
+                gameData.Levels.Add(new LevelData()
+                {
+                    LevelNumber = question.LevelNumber,
+                    Questions = new List<BaseQuestion>()
+                });
+            }
+            
+            gameData.Levels.Last().Questions.Add(question);
+        }
+        
+        return gameData;
     }
 }

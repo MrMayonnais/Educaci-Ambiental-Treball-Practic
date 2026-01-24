@@ -6,8 +6,8 @@ namespace Global
     public class LevelManager : MonoBehaviour
     {
         [Header("Question Managers")]
-        public Level1QuestionManager level1QuestionManager;
-        public Level2QuestionManager level2QuestionManager;
+        public MultiChoiceManager multiChoiceManager;
+        public DragNDropManager dragNDropManager;
     
         [Header("Level Configuration")]
         public TextAsset level1File; // Archivo .txt para nivel 1
@@ -64,7 +64,7 @@ namespace Global
         
         private void LoadQuestion(BaseQuestion question)
         {
-            if(_currentManager is Level2QuestionManager _mL)
+            if(_currentManager is DragNDropManager _mL)
                 _mL.DisplayQuestion(_currentQuestionIndex);
             else _currentManager.LoadQuestion(question);
         }
@@ -109,25 +109,25 @@ namespace Global
         
         private void DeactivateAllManagers()
         {
-            if (level1QuestionManager != null)
-                level1QuestionManager.gameObject.SetActive(false);
-            if (level2QuestionManager != null)
-                level2QuestionManager.gameObject.SetActive(false);
+            if (multiChoiceManager != null)
+                multiChoiceManager.gameObject.SetActive(false);
+            if (dragNDropManager != null)
+                dragNDropManager.gameObject.SetActive(false);
         }
         
         private BaseQuestionManager GetCurrentManager()
         {
             DeactivateAllManagers();
-            switch (_currentQuestion.type)
+            switch (_currentQuestion.Type)
             {
                 case QuestionType.MultipleChoice:
-                    level1QuestionManager.gameObject.SetActive(true);
-                    return level1QuestionManager;
+                    multiChoiceManager.gameObject.SetActive(true);
+                    return multiChoiceManager;
                 case QuestionType.DragAndDrop:
-                    level2QuestionManager.gameObject.SetActive(true);
-                    return level2QuestionManager;
+                    dragNDropManager.gameObject.SetActive(true);
+                    return dragNDropManager;
                 default:
-                    Debug.LogWarning("Tipo de pregunta no soportado: " + _currentQuestion.type);
+                    Debug.LogWarning("Tipo de pregunta no soportado: " + _currentQuestion.Type);
                     return null;
             }
         }
