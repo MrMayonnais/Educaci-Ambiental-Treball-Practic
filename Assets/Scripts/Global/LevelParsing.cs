@@ -6,107 +6,7 @@ using UnityEngine;
 
 public class LevelParsing
 {
-    /*public static LevelData ParseLevel1(string fileContent)
-    {
-        LevelData levelData = new LevelData();
-        levelData.questions = new List<BaseQuestion>();
-        
-        string[] lines = fileContent.Split('\n');
-        
-        // Primera línea es el nombre del nivel (entre comillas)
-        levelData.levelName = lines[0].Trim('"', '\r');
-        
-        int i = 1;
-        while (i < lines.Length)
-        {
-            string line = lines[i].Trim();
-            
-            // Detectar inicio de pregunta (nNombrePregunta)
-            if (line.StartsWith("n"))
-            {
-                MultiChoiceQuestion question = new MultiChoiceQuestion();
-                question.type = QuestionType.MultipleChoice;
-                
-                // Extraer número y nombre de pregunta
-                string questionName = line.Substring(1);
-                // Extraer número si existe al inicio
-                int numberEnd = 0;
-                while (numberEnd < questionName.Length && char.IsDigit(questionName[numberEnd]))
-                    numberEnd++;
-                
-                if (numberEnd > 0)
-                {
-                    question.questionNumber = int.Parse(questionName.Substring(0, numberEnd));
-                    question.questionText = questionName.Substring(numberEnd);
-                }
-                else
-                {
-                    question.questionText = questionName;
-                }
-                
-                i++;
-                
-                // Leer opciones (a, b, c, d)
-                if (i < lines.Length && lines[i].Trim().StartsWith("a"))
-                    question.OptionA = lines[i++].Trim().Substring(1);
-                if (i < lines.Length && lines[i].Trim().StartsWith("b"))
-                    question.OptionB = lines[i++].Trim().Substring(1);
-                if (i < lines.Length && lines[i].Trim().StartsWith("c"))
-                    question.OptionC = lines[i++].Trim().Substring(1);
-                if (i < lines.Length && lines[i].Trim().StartsWith("d"))
-                    question.OptionD = lines[i++].Trim().Substring(1);
-                
-                // Leer respuesta correcta [letra]
-                if (i < lines.Length && lines[i].Trim().StartsWith("["))
-                {
-                    string answerLine = lines[i++].Trim();
-                    question.Correct = answerLine.Trim('[', ']', '\r')[0];
-                }
-                
-                // Leer feedback correcto (+texto)
-                if (i < lines.Length && lines[i].Trim().StartsWith("+"))
-                    question.CorrectFeedback = lines[i++].Trim().Substring(1);
-                
-                // Leer feedback incorrecto (-texto)
-                if (i < lines.Length && lines[i].Trim().StartsWith("-"))
-                    question.IncorrectFeeback = lines[i++].Trim().Substring(1);
-                
-                levelData.questions.Add(question);
-            }
-            else
-            {
-                i++;
-            }
-        }
-        
-        return levelData;
-    }
-    
-    public static LevelData ParseLevel2(string fileContent)
-    {
-        LevelData levelData = new LevelData();
-        levelData.questions = new List<BaseQuestion>();
-        
-        levelData.questions.Add(new BaseQuestion(QuestionType.DragAndDrop));
-        levelData.questions.Add(new BaseQuestion(QuestionType.DragAndDrop));
-        levelData.questions.Add(new BaseQuestion(QuestionType.DragAndDrop));
-        levelData.questions.Add(new BaseQuestion(QuestionType.DragAndDrop));
-
-        return levelData;
-    }
-    
-    public static LevelData ParseLevel3(string fileContent)
-    {
-        // TODO: Implementar parser para nivel 3 cuando se defina el formato
-        LevelData levelData = new LevelData();
-        levelData.levelName = "Nivel 3";
-        levelData.questions = new List<BaseQuestion>();
-        Debug.LogWarning("Formato de Nivel 3 aún no definido");
-        return levelData;
-    }*/
-
-
-    public GameData ParseAllQuestions(string fileContent)
+    public static GameData ParseAllQuestions(string fileContent)
     {
         var gameData = new GameData
         {
@@ -129,18 +29,33 @@ public class LevelParsing
         return gameData;
     }
     
-    public DragAndDropQuestion ParseDragNDropQuestion(string[] lines, int currentIndex)
+    private static DragAndDropQuestion ParseDragNDropQuestion(string[] lines, int currentIndex, BaseQuestion baseQuestion = null)
     {
-        DragAndDropQuestion question = new DragAndDropQuestion();
+        DragAndDropQuestion question = new DragAndDropQuestion(baseQuestion);
         
-        // Implementar parsing específico para DragAndDropQuestion aquí
+        for (int i = currentIndex; i < lines.Length; i++)
+        {
+            var line = lines[i];
+
+            if (char.IsLetter(line.Substring(0, 1)[0]))
+            {
+                if (line.Substring(1, 1) == "<")
+                {
+                    question.CorrectMatches.Add(CreateCorrectMatchFromLines(lines[i], lines[i + 1]));
+                    i++;
+                }
+                    
+            }
+            else if (line.StartsWith("+")) question.CorrectFeedback = line.Trim('+').Trim();
+            else if (line.StartsWith("-")) question.IncorrectFeedback = line.Trim('-').Trim();
+        }
         
         return question;
     }
     
-    public MultiChoiceQuestion ParseMultiChoiceQuestion(string[] lines, int currentIndex)
+    private static MultiChoiceQuestion ParseMultiChoiceQuestion(string[] lines, int currentIndex, BaseQuestion baseQuestion = null)
     {
-        MultiChoiceQuestion question = new MultiChoiceQuestion();
+        MultiChoiceQuestion question = new MultiChoiceQuestion(baseQuestion);
 
         for (int i = currentIndex; i < lines.Length; i++)
         {
@@ -159,7 +74,7 @@ public class LevelParsing
         return question;
     }
 
-    private BaseQuestion ParseQuestionBlock(string block)
+    private static BaseQuestion ParseQuestionBlock(string block)
     {
         BaseQuestion question = new BaseQuestion();
 
@@ -182,11 +97,11 @@ public class LevelParsing
 
                 if (typePart == "M")
                 {
-                    question = ParseMultiChoiceQuestion(lines, i);
+                    question = ParseMultiChoiceQuestion(lines, i, question);
                 }
                 else if (typePart == "D")
                 {
-                    question = ParseDragNDropQuestion(lines, i);
+                    question = ParseDragNDropQuestion(lines, i, question);
                 }
             }
         }
@@ -194,7 +109,7 @@ public class LevelParsing
         return question;
     }
     
-    private GameData SortQuestionsIntoLevels(List<BaseQuestion> questions)
+    private static GameData SortQuestionsIntoLevels(List<BaseQuestion> questions)
     {
         var gameData = new GameData
         {
@@ -216,5 +131,28 @@ public class LevelParsing
         }
         
         return gameData;
+    }
+    
+    private static CorrectMatch CreateCorrectMatchFromLines(string draggableLine, string dropZoneLine)
+    {
+        var draggableParts = draggableLine.Substring(2).Split('%', '$');
+        var draggableComponentName = draggableParts[0];
+        var draggableText = draggableParts.Length > 1 ? draggableParts[1] : "";
+        var draggableSpecialText = draggableParts.Length > 2 ? draggableParts[2] : "";
+        
+        var dropZoneParts = dropZoneLine.Substring(2).Split('%', '$');
+        var dropZoneComponentName = dropZoneParts[0];
+        var dropZoneText = dropZoneParts.Length > 1 ? dropZoneParts[1] : "";
+        var dropZoneSpecialText = dropZoneParts.Length > 2 ? dropZoneParts[2] : "";
+        
+        return new CorrectMatch
+        {
+            DraggableComponentName = draggableComponentName,
+            DraggableText = draggableText,
+            DraggableSpecialText = draggableSpecialText,
+            DropZoneComponentName = dropZoneComponentName,
+            DropZoneText = dropZoneText,
+            DropZoneSpecialText = dropZoneSpecialText
+        };
     }
 }

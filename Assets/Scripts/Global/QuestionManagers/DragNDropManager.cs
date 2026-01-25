@@ -6,9 +6,10 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using Global;
+using Global.QuestionManagers;
 using Unity.VisualScripting;
 
-namespace Global
+namespace Global.QuestionManagers
 {
     public class DragNDropManager : BaseQuestionManager
     {
@@ -35,6 +36,7 @@ namespace Global
         public AnimationClip showIncorrectFeedbackClip;
 
         private DragAndDropQuestion _currentQuestion;
+        
         private Dictionary<DropZone, List<DraggableItem>> _currentCorrectMatches;
         private GameObject _currentLayout;
         private List<DraggableItem> _draggableItems = new List<DraggableItem>();
@@ -52,14 +54,16 @@ namespace Global
         private int _correctDrops;
 
 
-        void OnEnable()
+        private void OnEnable()
         {
             DraggableItem.OnItemDropped += OnItemDropped;
+            GameEvents.LoadQuestion += LoadQuestion;
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             DraggableItem.OnItemDropped -= OnItemDropped;
+            GameEvents.LoadQuestion -= LoadQuestion;
         }
 
         private void Start()
@@ -104,6 +108,11 @@ namespace Global
             _nextButton.onClick.AddListener(OnNextButtonClicked);
             _restartButton.onClick.AddListener(OnRestartButtonClicked);
             _questionButton.onClick.AddListener(OnQuestionButtonClicked);
+        }
+
+        public override void LoadQuestion(BaseQuestion question)
+        {
+            
         }
         
         public void DisplayQuestion(int questionN)

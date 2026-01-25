@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Global.Types;
 
 public class DragAndDropQuestion : BaseQuestion
 {
@@ -12,7 +13,7 @@ public class DragAndDropQuestion : BaseQuestion
     public List<String> DropZonesText;
     public List<String> DropZonesSpecialText;
     
-    public Dictionary<String, List<String>> CorrectMatches;
+    public List<CorrectMatch> CorrectMatches;
 
     public DragAndDropQuestion()
     {
@@ -25,13 +26,13 @@ public class DragAndDropQuestion : BaseQuestion
         DropZonesText = new List<String>();
         DropZonesSpecialText = new List<String>();
         
-        CorrectMatches = new Dictionary<String, List<String>>();
+        CorrectMatches = new List<CorrectMatch>();
     }
     
     public DragAndDropQuestion(int questionNumber, int levelNumber, string questionText, string correctFeedback, string incorrectFeedback,
         List<String> draggableItems, List<String> draggableItemsText, List<String> draggableItemsSpecialText,
         List<String> dropZones, List<String> dropZonesText, List<String> dropZonesSpecialText,
-        Dictionary<String, List<String>> correctMatches) : base(questionNumber, levelNumber, questionText, QuestionType.DragAndDrop, correctFeedback, incorrectFeedback)
+        List<CorrectMatch> correctMatches) : base(questionNumber, levelNumber, questionText, QuestionType.DragAndDrop, correctFeedback, incorrectFeedback)
     {
         DraggableItems = draggableItems;
         DraggableItemsText = draggableItemsText;
@@ -43,7 +44,16 @@ public class DragAndDropQuestion : BaseQuestion
         
         CorrectMatches = correctMatches;
     }
-    
-    
 
+    public DragAndDropQuestion(BaseQuestion baseQuestion)
+    {
+        this.QuestionNumber = baseQuestion.QuestionNumber;
+        this.LevelNumber = baseQuestion.LevelNumber;
+        this.QuestionText = baseQuestion.QuestionText;
+        this.Type = QuestionType.DragAndDrop;
+        this.CorrectFeedback = baseQuestion.CorrectFeedback;
+        this.IncorrectFeedback = baseQuestion.IncorrectFeedback;
+    }
+    
+    
 }

@@ -1,4 +1,5 @@
 using System;
+using Global.QuestionManagers;
 using UnityEngine;
 
 namespace Global
@@ -26,7 +27,6 @@ namespace Global
 
         private void Start()
         {
-            // Initialize level and question indices
             _currentLevel = ParseLevel(_currentLevelIndex);
             _currentQuestion = _currentLevel.questions[0];
             LoadLevel();
