@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 
-public class LevelData
+namespace Global.Types
 {
-    public int LevelNumber;
-    public List<BaseQuestion> Questions;
+    public class LevelData
+    {
+        public int LevelNumber;
+        public List<BaseQuestion> Questions;
+    }
 }

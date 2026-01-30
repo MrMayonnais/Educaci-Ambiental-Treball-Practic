@@ -56,7 +56,7 @@ namespace Global.QuestionManagers
             GameEvents.LoadQuestion -= LoadQuestion;
         }
 
-        public override void LoadQuestion(BaseQuestion question)
+        private void LoadQuestion(BaseQuestion question)
         {
         
             if (question is MultiChoiceQuestion multiChoice)

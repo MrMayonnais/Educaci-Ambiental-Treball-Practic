@@ -1,4 +1,5 @@
 ﻿using System;
+using Global.Types;
 using UnityEngine;
 
 namespace Global

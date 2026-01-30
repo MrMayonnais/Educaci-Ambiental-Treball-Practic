@@ -1,5 +1,6 @@
 using System;
 using Global.QuestionManagers;
+using Global.Types;
 using UnityEngine;
 
 namespace Global

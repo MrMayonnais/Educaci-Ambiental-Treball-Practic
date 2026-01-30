@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Global;
 using Global.QuestionManagers;
+using Global.Types;
 using Unity.VisualScripting;
 
 namespace Global.QuestionManagers
@@ -110,7 +111,7 @@ namespace Global.QuestionManagers
             _questionButton.onClick.AddListener(OnQuestionButtonClicked);
         }
 
-        public override void LoadQuestion(BaseQuestion question)
+        private void LoadQuestion(BaseQuestion question)
         {
             
         }

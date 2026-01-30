@@ -26,6 +26,8 @@ namespace Global.QuestionManagers
         public Sprite incorrectSprite;
         
         // Private UI references//
+        private GameObject _currentLayout;
+        
         private TextMeshProUGUI _questionText;
         private TextMeshProUGUI _feedbackText;
         
@@ -41,6 +43,18 @@ namespace Global.QuestionManagers
         
         private DragAndDropQuestion _currentQuestion;
         private List<CorrectMatch> _playerMatches;
+
+        private void OnEnable()
+        {
+            GameEvents.LoadQuestion += LoadQuestion;
+            DraggableItem.OnItemDropped += OnItemDropped;
+        }
+
+        private void OnDisable()
+        {
+            GameEvents.LoadQuestion -= LoadQuestion;
+            DraggableItem.OnItemDropped -= OnItemDropped;
+        }
 
         private void Start()
         {
@@ -61,7 +75,7 @@ namespace Global.QuestionManagers
                 var clip = displayLayoutClips[i];
                 if (clip)
                 {
-                    _animation.AddClip(clip, "DisplayLayout" + i + 1);
+                    _animation.AddClip(clip, clip.name);
                 }
             }
             
@@ -82,19 +96,165 @@ namespace Global.QuestionManagers
             _questionContinueButton.onClick.AddListener(OnQuestionButtonClicked);
         }
         
-        private static void OnNextButtonClicked()
+        private void LoadQuestion(BaseQuestion question)
         {
+            if(question is DragAndDropQuestion dragAndDropQuestion)
+            {
+                _currentQuestion = dragAndDropQuestion;
+                _currentLayout = FindCurrentQuestionLayout();
+                GetLayoutComponents();
+                SetTexts();
+                DisplayQuestion();
+            }
+            else Debug.Log("WRONG QUESTION TYPE FOR CURRENT DRAG N DROP QUESTION MANAGER");
+        }
+        
+        private void GetLayoutComponents()
+        {
+            _draggableItems = new List<DraggableItem>();
+            _dropZones = new List<DropZone>();
+            
+            var draggableItemsParent = Dlcs.Extensions.GetChildByName(_currentLayout, "DraggableItems");
+            var dropZonesParent = Dlcs.Extensions.GetChildByName(_currentLayout, "DropZones");
+
+            if (draggableItemsParent)
+            {
+                foreach (Transform child in draggableItemsParent.transform)
+                {
+                    var item = child.GetComponent<DraggableItem>();
+                    if (item)
+                    {
+                        _draggableItems.Add(item);
+                    }
+                }
+            }
+
+            if (dropZonesParent)
+            {
+                foreach (Transform child in dropZonesParent.transform)
+                {
+                    var zone = child.GetComponent<DropZone>();
+                    if (zone)
+                    {
+                        _dropZones.Add(zone);
+                    }
+                }
+            }
+        }
+        
+        private void SetTexts()
+        {
+            _questionText.text = _currentQuestion.QuestionText;
+            _feedbackText.text = _currentQuestion.CorrectFeedback;
+            
+            foreach (var item in _currentQuestion.CorrectMatches)
+            {
+                foreach (var draggableItem in _draggableItems)
+                {
+                    if (draggableItem.name == item.DraggableComponentName)
+                    {
+                        draggableItem.SetItemText(item.DraggableText, item.DraggableSpecialText);
+                    }
+                }
+
+                foreach (var dropZone in _dropZones)
+                {
+                    if (dropZone.name == item.DraggableComponentName)
+                    {
+                        dropZone.SetItemText(item.DropZoneText, item.DropZoneSpecialText);
+                    }
+                }
+            }
+        }
+
+        private void DisplayQuestion()
+        {
+            foreach(var clip in displayLayoutClips)
+            {
+                if (clip.name == _currentLayout.name)
+                {
+                    _animation.Play(clip.name);
+                    break;
+                }
+            }
+        }
+
+        private void OnItemDropped(DraggableItem item, DropZone dropZone)
+        {
+            foreach(var correctMatch in _currentQuestion.CorrectMatches)
+            {
+                if (item.name == correctMatch.DraggableComponentName &&
+                    dropZone.name == correctMatch.DropZoneComponentName)
+                {
+                    
+                    _playerMatches.Add(correctMatch);
+                    GameEvents.AppearDropZoneImage(dropZone);
+                    return;
+                }
+            }
+
+            GameEvents.ForceItemReturn(item);
+        }
+
+        private void DisplayCorrectFeedback()
+        {
+            _animation.Play("ShowCorrectFeedback");
+            questionPanel.SetActive(false);
+            feedbackPanel.SetActive(true);
+            nextButton.SetActive(true);
+        }
+
+        private void DisplayIncorrectFeedback()
+        {
+            _animation.Play("ShowIncorrectFeedback");
+            questionPanel.SetActive(false);
+            feedbackPanel.SetActive(true);
+            nextButton.SetActive(true);
+        }
+        
+        private GameObject FindCurrentQuestionLayout()
+        {
+            var layoutNumber = _currentQuestion.LevelNumber + "." + _currentQuestion.QuestionNumber;
+            
+            foreach (var layout in layouts)
+            {
+                if (layout.name == layoutNumber) return layout;
+            }
+
+            return null;
+        }
+        
+        private void OnNextButtonClicked()
+        {
+            _playerMatches = new List<CorrectMatch>();
             GameEvents.OnNextQuestion?.Invoke();
         }   
         
-        private static void OnRestartButtonClicked()
+        private void OnRestartButtonClicked()
         {
+            _playerMatches = new List<CorrectMatch>();
             GameEvents.OnRestartLevel?.Invoke();
         }
 
         private static void OnQuestionButtonClicked()
         {
             //TODO: Implement if needed
+        }
+
+        public void EnableButtons()
+        {
+            _nextButton.interactable = true;
+            _restartButton.interactable = true;
+            
+            _questionContinueButton.interactable = true;
+        }
+
+        public void DisableButtons()
+        {
+            _nextButton.interactable = false;
+            _restartButton.interactable = false;
+            
+            _questionContinueButton.interactable = false;
         }
     }
 }
