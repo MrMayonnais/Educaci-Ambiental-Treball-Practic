@@ -58,10 +58,11 @@ namespace Global.QuestionManagers
 
         private void LoadQuestion(BaseQuestion question)
         {
-        
             if (question is MultiChoiceQuestion multiChoice)
             {
                 _currentQuestion = multiChoice;
+                Debug.Log("loading multi choice question :" + question.QuestionText);
+                Debug.Log("with correct answer: " + multiChoice.CorrectAnswer);
                 DisplayQuestion();
             }
             else Debug.Log("WRONG QUESTION TYPE FOR CURRENT MULTI CHOICE QUESTION MANAGER");
@@ -109,6 +110,7 @@ namespace Global.QuestionManagers
         {
             GameEvents.OnNextQuestion?.Invoke();
         }
+        
         private void OnRestartbuttonClicked()
         {
             GameEvents.OnRestartLevel?.Invoke();

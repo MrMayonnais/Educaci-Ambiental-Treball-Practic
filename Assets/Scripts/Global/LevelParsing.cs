@@ -21,7 +21,8 @@ public class LevelParsing
         {
             questions.Add(ParseQuestionBlock(block));
         }
-
+        
+        //PrintAllQuestions(questions);
 
         gameData = SortQuestionsIntoLevels(questions);
         
@@ -41,7 +42,7 @@ public class LevelParsing
             {
                 if (line.Substring(1, 1) == "<")
                 {
-                    question.CorrectMatches.Add(CreateCorrectMatchFromLines(lines[i], lines[i + 1]));
+                    CreateCorrectMatchFromLines(lines[i], lines[i + 1], question);
                     i++;
                 }
                     
@@ -118,7 +119,7 @@ public class LevelParsing
 
         foreach (var question in questions)
         {
-            if (gameData.Levels.Last() == null || gameData.Levels.Last().LevelNumber != question.LevelNumber)
+            if (gameData.Levels.Count == 0 || gameData.Levels.Last() == null || gameData.Levels.Last().LevelNumber != question.LevelNumber)
             {
                 gameData.Levels.Add(new LevelData()
                 {
@@ -133,26 +134,76 @@ public class LevelParsing
         return gameData;
     }
     
-    private static CorrectMatch CreateCorrectMatchFromLines(string draggableLine, string dropZoneLine)
+    private static void CreateCorrectMatchFromLines(string draggableLine, string dropZoneLine, DragAndDropQuestion question)
     {
-        var draggableParts = draggableLine.Substring(2).Split('%', '$');
+        var draggableParts = draggableLine.Substring(2).Trim().Split('%', '$');
         var draggableComponentName = draggableParts[0];
         var draggableText = draggableParts.Length > 1 ? draggableParts[1] : "";
         var draggableSpecialText = draggableParts.Length > 2 ? draggableParts[2] : "";
         
-        var dropZoneParts = dropZoneLine.Substring(2).Split('%', '$');
+        Debug.Log("Creating Draggable: " + draggableComponentName + ", " + draggableText + ", " + draggableSpecialText);
+        
+        question.DraggableItems.Add(new DragAndDropQuestion.DraggableItemInfo()
+        {
+            ComponentName = draggableComponentName,
+            Text = draggableText,
+            SpecialText = draggableSpecialText
+        });
+        
+        var dropZoneParts = dropZoneLine.Substring(2).Trim().Split('%', '$');
         var dropZoneComponentName = dropZoneParts[0];
         var dropZoneText = dropZoneParts.Length > 1 ? dropZoneParts[1] : "";
         var dropZoneSpecialText = dropZoneParts.Length > 2 ? dropZoneParts[2] : "";
         
-        return new CorrectMatch
+        Debug.Log("Creating DropZone: " + dropZoneComponentName + ", " + dropZoneText + ", " + dropZoneSpecialText);
+        
+        question.DropZones.Add(new DragAndDropQuestion.DropZoneInfo()
         {
-            DraggableComponentName = draggableComponentName,
-            DraggableText = draggableText,
-            DraggableSpecialText = draggableSpecialText,
-            DropZoneComponentName = dropZoneComponentName,
-            DropZoneText = dropZoneText,
-            DropZoneSpecialText = dropZoneSpecialText
-        };
+            ComponentName = dropZoneComponentName,
+            Text = dropZoneText,
+            SpecialText = dropZoneSpecialText
+        });
+
+
+        if (!string.IsNullOrEmpty(draggableComponentName) && !string.IsNullOrEmpty(dropZoneComponentName))
+        {
+            var match = new CorrectMatch
+            {
+                DraggableComponentName = draggableComponentName,
+                DraggableText = draggableText,
+                DraggableSpecialText = draggableSpecialText,
+                DropZoneComponentName = dropZoneComponentName,
+                DropZoneText = dropZoneText,
+                DropZoneSpecialText = dropZoneSpecialText
+            };
+            
+            question.CorrectMatches.Add(match);
+        }
+    }
+    
+    private static void PrintAllQuestions(List<BaseQuestion> questions)
+    {
+        Debug.Log($"Total Questions: {questions.Count}");
+    
+        foreach (var question in questions)
+        {
+            Debug.Log($"Level: {question.LevelNumber}, Question: {question.QuestionNumber}");
+        
+            if (question is MultiChoiceQuestion mcq)
+            {
+                Debug.Log($"  Type: Multiple Choice");
+                Debug.Log($"  Question: {mcq.QuestionText}");
+                Debug.Log($"  Options: a) {mcq.OptionA}, b) {mcq.OptionB}, c) {mcq.OptionC}, d) {mcq.OptionD}");
+                Debug.Log($"  Correct: {mcq.CorrectAnswer}");
+            }
+            else if (question is DragAndDropQuestion dnd)
+            {
+                Debug.Log($"  Type: Drag and Drop");
+                Debug.Log($"  Draggables: {dnd.DraggableItems.Count}, DropZones: {dnd.DropZones.Count}");
+                Debug.Log($"  Matches: {dnd.CorrectMatches.Count}");
+            }
+        
+            Debug.Log("---");
+        }
     }
 }

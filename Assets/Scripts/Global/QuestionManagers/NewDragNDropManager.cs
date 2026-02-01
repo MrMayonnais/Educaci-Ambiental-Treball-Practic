@@ -15,12 +15,6 @@ namespace Global.QuestionManagers
         public GameObject nextButton;
         public List<GameObject> layouts;
         
-        [Header("Animations")]
-        public List<AnimationClip> displayLayoutClips;
-        
-        public AnimationClip showCorrectFeedbackClip;
-        public AnimationClip showIncorrectFeedbackClip;
-        
         [Header("Feedback Sprites")]
         public Sprite correctSprite;
         public Sprite incorrectSprite;
@@ -56,40 +50,19 @@ namespace Global.QuestionManagers
             DraggableItem.OnItemDropped -= OnItemDropped;
         }
 
-        private void Start()
+        private void Awake()
         {
-            LoadAnimations();   
             GetComponents();
         }
         
-        private void LoadAnimations()
-        {
-            _animation = GetComponent<Animation>();
-            if (!_animation)
-            {
-                _animation = gameObject.AddComponent<Animation>();
-            }
-            
-            for (int i = 0; i < displayLayoutClips.Count; i++)
-            {
-                var clip = displayLayoutClips[i];
-                if (clip)
-                {
-                    _animation.AddClip(clip, clip.name);
-                }
-            }
-            
-            if (showCorrectFeedbackClip) _animation.AddClip(showCorrectFeedbackClip, "ShowCorrectFeedback");
-            if (showIncorrectFeedbackClip) _animation.AddClip(showIncorrectFeedbackClip, "ShowIncorrectFeedback");
-        }
 
         private void GetComponents()
         {
             _nextButton = nextButton.GetComponent<Button>();
             _restartButton = restartButton.GetComponent<Button>();
-            _questionText = questionPanel.GetComponentInChildren<TextMeshProUGUI>();
-            _questionContinueButton = questionPanel.GetComponentInChildren<Button>();
-            _feedbackText = feedbackPanel.GetComponentInChildren<TextMeshProUGUI>();
+            _questionText = questionPanel.GetComponentInChildren<TextMeshProUGUI>(true);
+            _questionContinueButton = questionPanel.GetComponentInChildren<Button>(true);
+            _feedbackText = feedbackPanel.GetComponentInChildren<TextMeshProUGUI>(true);
 
             _nextButton.onClick.AddListener(OnNextButtonClicked);
             _restartButton.onClick.AddListener(OnRestartButtonClicked);
@@ -144,39 +117,48 @@ namespace Global.QuestionManagers
         
         private void SetTexts()
         {
+            
             _questionText.text = _currentQuestion.QuestionText;
             _feedbackText.text = _currentQuestion.CorrectFeedback;
-            
-            foreach (var item in _currentQuestion.CorrectMatches)
+
+            foreach(var item in _currentQuestion.DraggableItems)
             {
+                
                 foreach (var draggableItem in _draggableItems)
-                {
-                    if (draggableItem.name == item.DraggableComponentName)
-                    {
-                        draggableItem.SetItemText(item.DraggableText, item.DraggableSpecialText);
+                { 
+                    if (draggableItem.name == item.ComponentName) 
+                    { 
+                        draggableItem.SetItemText(item.Text, item.SpecialText);
+                        break;
                     }
                 }
+            }
 
+            foreach(var item in _currentQuestion.DropZones)
+            {
+                
                 foreach (var dropZone in _dropZones)
                 {
-                    if (dropZone.name == item.DraggableComponentName)
-                    {
-                        dropZone.SetItemText(item.DropZoneText, item.DropZoneSpecialText);
+                    if (dropZone.name == item.ComponentName)
+                    { 
+                        Debug.Log("Setting DropZone Text for " + dropZone.name + " to " + item.Text);
+                        dropZone.SetItemText(item.Text, item.SpecialText);
+                        break;
                     }
+                    
                 }
             }
         }
 
         private void DisplayQuestion()
         {
-            foreach(var clip in displayLayoutClips)
+            foreach(var dropZone in _dropZones)
             {
-                if (clip.name == _currentLayout.name)
-                {
-                    _animation.Play(clip.name);
-                    break;
-                }
+                GameEvents.ForceDisappearDropZoneImage(dropZone);
             }
+            
+            _currentLayout.GetComponent<Animator>().SetTrigger("Display");
+          
         }
 
         private void OnItemDropped(DraggableItem item, DropZone dropZone)
@@ -214,11 +196,17 @@ namespace Global.QuestionManagers
         
         private GameObject FindCurrentQuestionLayout()
         {
-            var layoutNumber = _currentQuestion.LevelNumber + "." + _currentQuestion.QuestionNumber;
+            var layoutNumber = "layout" + _currentQuestion.LevelNumber + "." + _currentQuestion.QuestionNumber;
             
             foreach (var layout in layouts)
             {
-                if (layout.name == layoutNumber) return layout;
+                if (layout.name == layoutNumber)
+                {
+                    layout.SetActive(true);
+                    return layout;
+                }
+                
+                else layout.SetActive(false);
             }
 
             return null;

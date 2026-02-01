@@ -1,0 +1,239 @@
+//
+*1.1
+!M
+#On se situa de manera simbòlica el naixement del riu Gaià? 
+aA la Desembocadura de Tamarit
+bEn un llac de muntanya permanent
+cA les Fonts dels Comtes de Santa Coloma de Queralt
+dA una font de surgència a Querol
+?c
++Ho has fet genial! El riu Gaià neix de la unió de les aigües de diverses rieres i torrents, a partir del municipi de Pontils  el Gaià agafa l’estructura d’eix fluvial  
+-Ups! No passa res, torna-ho a intentar
+//
+*1.2
+!M
+#Per què es diu que el riu Gaià no neix a un sol punt? 
+aPerquè canvia de curs cada any
+bPerquè depèn de la quantitat de pluja
+cPerquè també rep aigua del Francolí 
+dPerquè es forma a partir de la unió de diversos torrents, rieres i fonts 
+?d
++Molt bé! El Gaià no neix d’un sol punt perquè a la capçalera i durant tot el seu curs s’alimenta de rius i torrents, d’això se'n diu conca hidrogràfica
+-No et rendeixis, cada errada és una gota d’experiència
+//
+*1.3
+!M
+#Quina funció té el bosc de ribera al tram alt del riu Gaià? 
+aProtegir les ribes, donar ombra i mantenir la humitat de l’ecosistema.
+bDecorar el paisatge del riu
+cFer que l’aigua circuli més ràpid
+dImpedir que els humans entrin a pescar
+?a
++Exel·lent! El bosc de ribera protegeix les vores del riu, dóna ombra, manté la humitat i ajuda molts animals a viure-hi
+-El riu té racons inesperats, tu pots!
+//
+*1.4
+!M
+#La Salamandra és una espècie típica del riu Gaià perquè...
+aViu només als rius de Catalunya
+bPerquè al Gaià troba els ambients humits i agua neta per sobreviure
+cViu sempre dins d’aigua corrent
+dPot viure en aigües contaminades
+?b
++Bona feina! La salamandra no pot viure en qualsevol lloc, necessita ambients humits, ombrívols i amb aigua neta
+-Respira a fons i torna-ho a provar
+//
+*1.5
+!M
+#Per què els amfibis, com la salamandra, es consideren bioindicadors de la qualitat del riu? 
+aPerquè poden viure en qualsevol tipus d’aigua
+bPerquè només apareixen quan el riu és molt profund
+cPerquè només s’alimenten d’altres animals aquàtics
+dPerquè son molt sensibles a la contaminació, als canvis d’humitat i temperatura
+?d
++Genial! Els bioindicadors son organismes que responen a la contaminació ambiental amb modificacions en  la seva aparença
+-Revisa la teva resposta
+//
+*1.6
+!M
+#Al tram alt del riu Gaià, l’aigua acostuma a baixar més ràpid perquè...
+aEl llit del riu és més ample
+bEl terreny té més pendent 
+cL’aigua és més freda
+dHi ha més pedres
+?b
++Molt bé! A la part alta del riu, el terreny té més pendent, per això l’aigua baixa més ràpid que al tram mitjà o a la desembocadura
+-Recorda que estàs aprenent, dona’t una nova oportunitat
+//
+*1.7
+!M
+#Què és una “Gaianada”?
+aUn període llarg de sequera
+bUn embassament temporal del riu
+cUna crescuda sobtada del riu després de pluges intenses
+dUn desviament artificial del curs del riu
+?c
++Ho estàs fent genial! Les avingudes del riu Gaià tenen nom propi, es coneixen popularment com “Gaianades”
+-T’ha agafat la “Gainada”, ho pots tornar a intentar
+//
+*1.8
+!M
+#Per què les “Gaianades” poden ser perilloses? 
+aPerquè l’aigua baixa molt ràpid i amb molta força en poc temps
+bPerquè embruten el riu
+cPerquè només passen a l’època de cria dels peixos
+dPerquè contaminen l’aigua de manera natural
+?a
++Victòria! Durant una “Gaianada”, el riu pot créixer molt en molt poc temps, l’aigua baixa amb molta força i pot ser perillosa per a les persones i el medi.
+-Torna-ho a provar, aquesta, és la última pregunta
+//
+*2.1
+!D
+#Coneixes els arbres que podem trobar al Gaià? Demostra-ho arrossegant cada fulla sobre el seu arbre, però ves amb comte perquè, hi ha 2 espècies invasores que interrompen el creixement de les autòctones, seràs capaç d’identificar-les? 
+A<HAlber
+A>Alber%Àlber$Populus alba
+B<HFreixe
+B>Freixe%Freixe$Fraxinus excelsior
+C<HAilant
+C>Ailant%Ailant$Ailanthus altissima
+D<HCaña
+D>Caña%Canya americana$Arundo donax
+E<HAuro
+E>Auro%Auró negre$Acer monspessulanum
+F<HArç
+F>Arç%Arç blanc$Crataegus monogyna
+G<HOlmo
+G>Olmo%Om$Ulmus minor
++Molt bé! Les espècies exòtiques invasores vegetals com l’ailant i la canya americana son un risc per a la salut del Gaià, desplacen les espècies autòctones, empobreixen la biodiversitat i alteren el bon funcionament del riu
+-No passa res! Torna a mirar bé la forma de la fulla i el seu color
+//
+*2.2
+!D
+#Sabries reconèixer les espècies d’animals que amenacen la biodiversitat del riu? No totes les que hi viuen haurien de ser-hi. Identifica les espècies invasores i arrossega-les fins al problema que genera
+A<Vison%Visó americà$Neogale vison
+A>RiscAquatic%Posa en risc aus aquàtiques, peixos i mamífers de riu
+B<Alburn%Alburn$Alburnus alburnus
+B>CompeteixEspai%Competeix per espai i aliment amb les espècies autòctones
+C<Bagra%Bagra$Leuciscus cephalus
+C>
+D<CangrejoIberico%Cranc de riu ibèric$Austropotamobius pallipes
+D>
+E<TortugaDeCuelloRojo%Tortuga d'orelles vermelles$Trachemys scripta elegans
+E>Territorial%Molt territorial i voraç, desplaça a l'espècie autòctona
+F<Salamandra%Salamandra$Caudata
+F>
+G<Musaraña%Musaranya aquàtica$Neomys anomalus
+G>
+H<CangrejoRojo%Cranc roig$Procambarus clarkii
+H>Malaltia%Portador de la malaltia: afanomicosi, que afecta a l'espècie autòctona 
+I<TortugaDeRierol%Tortuga de rierol$Mauremys leprosa
+I>
++Excel·lent! Has identificat correctament l’amenaça, conèixer com actuen aquests invasors és el primer pas per a protegir el Gaià
+-Bon intent! Tu pots!
+//
+*2.3
+!D
+#El Gaià podria estar en perill! Les Figures de Protecció són escuts legals que el defensen. Arrossega correctament cada logotip de la figura de protecció que correspon al problema per protegir el riu, pots consultar el quadern de camp per saber més sobre les figures de protecció.
+A<Penin
+A>PaisajeConstruido
+B<Zepa
+B>PaisajeCohetes
+C>Custodia
+C>PaisajeInvasoras
+D<Refujio
+D>PaisajeCazadores
++Felicitats! El Gaià t’agraeix la protecció
+-Torna a intentar-ho, recorda que pots consultar el quadern de camp
+//
+*2.4
+!D
+#El riu Gaià també guarda històries. Al llarg del seu curs, les persones han construït molins, sèquies, castells, preses i fàbriques aprofitant l’aigua i la seva força.Observa les imatges i relaciona cada funció amb la construcció que li correspon
+A<Desviar%Acumular i desviar el pas de l'aigua
+A>Presa%Presa
+B>Portar%Portar aigua fins als camps i pobles
+B>Sequia%Sèquia
+C<Moldre%Moldre gra aprofitant la força de l'aigua
+C>Moli%Molí
+D<Controlar%Controlar els passos de riu i el territori
+D>Castell%Castell
++Molt bé! El Gaià no només és natura, també ha modelat la vida i la història de les persones
+-Observa bé la construcció i pensa com intervenia l’aigua
+//
+*3.1
+!M
+#Els pantans afecten a la connectivitat del riu perquè ...
+aFacilita el moviment natural de sediments
+bPermet el pas lliure de totes les espècies
+cInterromp el flux natural d’aigua, fauna i sediments
+dFa que el riu sigui més llarg
+?c
++Molt bé! Les preses no només dificulten el pas de fauna i sediments, també eviten que les Gaianades arribin a la desembocadura amb tota la força.
+-Observa com funciona un riu i torna-ho a provar, quan es talla el seu curs, també es trenca la seva connectivitat natural
+//
+*3.2
+!M
+#Si el cabal ecològic del riu Gaià és insuficient, quin efecte pot produir-se? 
+aAugment de la biodiversitat
+bMillora de la connectivitat fluvial
+cIncrement de la velocitat de l’aigua
+dPèrdua d’hàbitats i disminució d’espècies 
+?d
++Correcte! El cabal ecològic és essencial perquè el riu mantingui els seus hàbitats i la vida aquàtica.
+-Pensa-ho bé: sense prou aigua, el riu perd hàbitats i moltes espècies no poden sobreviure
+//
+*3.3
+!D
+#Sense la vegetació de ribera, com el senill i el arbres de més port,  molts animals no podrien viure al Gaià, arrossega cada animal al grup del que li aporta la vegetació de ribera, dedueix què li convé més, refugi o aliment.  
+A<Rana%Granota$Pelophylax prezi
+A>Panel%Refugi, protecció i zones segures de cria
+B<pato%Ànec collverd$Anas platyrhynchos
+B>Panel%Refugi, protecció i zones segures de cria
+C<Tortuga de rierol%Tortuga de rierol$Mauremys leprosa
+C>Panel%Refugi, protecció i zones segures de cria
+D<Polla%Polla d'aigua$Gallinula chloropus
+D>Panel%Refugi, protecció i zones segures de cria
+E<Bagra%Bagra$Leuciscus cephalus
+E>Panel%Aliment i condicions adequades del riu
+F<Libelula%Libèl·lula$Anisoptera
+F>Panel%Aliment i condicions adequades del riu
+G>Anguila%guila$Anguilla anguilla
+G<Panel%Aliment i condicions adequades del riu
+H<Blauet%lauet$Alcedo atthis
+H>Panel%Aliment i condicions adequades del riu
++Molt bé! Has entès com la vegetació de ribera ajuda als animals del riu Gaià a viure, alimentar-se i protegir-se.
+-Torna-ho a provar, observa bé cada animal i pensa si la vegetació li serveix més per amagar-se i criar o per trobar aliment i un riu saludable.
+//
+*3.4
+#Quina relació hi ha entre els abocaments contaminants i la fauna del riu Gaià?
+aEls abocaments no tenen cap efecte
+bPoden reduir l’oxigen, provocant la mort de peixos i invertebrats 
+cAfavoreixen la presència d’espècies sensibles
+dMillora la biodiversitat del riu
+?b
++Exacte! Els abocaments d’aigües residuals provoquen la mort de molts animals a la desembocadura, generalment a les temporades d’estiu quan augmenta la població a les platges. 
+-Recorda que la contaminació no pot millorar el riu
+//
+*3.5
+#Al tram baix del riu Gaià, la velocitat de l’aigua és menor, principalment perquè... 
+aEl pendent és més suau
+bHi ha menys cascades
+cEl riu és més estret
+dL’aigua és més calenta 
+?a
++Correcte! Quan el riu arriba a la desembocadura, el terreny té menys pendent, el riu circula lentament, és més ample i serpenteja.
+-Fixa’t bé, el relleu al tram final del riu no és el mateix que al naixement.
+//
+*3.6
+!D
+#ls rius canvien al llarg del seu recorregut i, al tram baix, poden formar meandres i diferents tipus de desembocadures. Observa les formes del riu i arrossega el nom amb la imatge corresponent, també pensa què hi podries trobar al Gaià.  
+A<desembocadura%Desembocadura amb duna
+A>desembocadura
+B<meandre%Meandre
+B>mandre
+C<estuari%Estuari
+C>estuari
+D<delta%Deta
+D>delta
++Genial! Al tram baix, el riu Gaià forma meandres perquè l’aigua circula més lentament i, la seva desembocadura és amb duna, que normalment el separa del mar i només s’obre amb pluges intenses.
+-Observa bé la forma del riu i torna a provar-ho
+//

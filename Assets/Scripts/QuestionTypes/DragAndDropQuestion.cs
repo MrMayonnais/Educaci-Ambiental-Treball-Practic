@@ -5,44 +5,19 @@ using Global.Types;
 
 public class DragAndDropQuestion : BaseQuestion
 {
-    public List<String> DraggableItems;
-    public List<String> DraggableItemsText;
-    public List<String> DraggableItemsSpecialText;
-    
-    public List<String> DropZones;
-    public List<String> DropZonesText;
-    public List<String> DropZonesSpecialText;
+    public List<DraggableItemInfo> DraggableItems;
+    public List<DropZoneInfo> DropZones;
     
     public List<CorrectMatch> CorrectMatches;
 
     public DragAndDropQuestion()
     {
         base.Type = QuestionType.DragAndDrop;
-        DraggableItems = new List<String>();
-        DraggableItemsText = new List<String>();
-        DraggableItemsSpecialText = new List<String>();
         
-        DropZones = new List<String>();
-        DropZonesText = new List<String>();
-        DropZonesSpecialText = new List<String>();
+        DraggableItems = new List<DraggableItemInfo>();
+        DropZones = new List<DropZoneInfo>();
         
         CorrectMatches = new List<CorrectMatch>();
-    }
-    
-    public DragAndDropQuestion(int questionNumber, int levelNumber, string questionText, string correctFeedback, string incorrectFeedback,
-        List<String> draggableItems, List<String> draggableItemsText, List<String> draggableItemsSpecialText,
-        List<String> dropZones, List<String> dropZonesText, List<String> dropZonesSpecialText,
-        List<CorrectMatch> correctMatches) : base(questionNumber, levelNumber, questionText, QuestionType.DragAndDrop, correctFeedback, incorrectFeedback)
-    {
-        DraggableItems = draggableItems;
-        DraggableItemsText = draggableItemsText;
-        DraggableItemsSpecialText = draggableItemsSpecialText;
-        
-        DropZones = dropZones;
-        DropZonesText = dropZonesText;
-        DropZonesSpecialText = dropZonesSpecialText;
-        
-        CorrectMatches = correctMatches;
     }
 
     public DragAndDropQuestion(BaseQuestion baseQuestion)
@@ -53,7 +28,36 @@ public class DragAndDropQuestion : BaseQuestion
         this.Type = QuestionType.DragAndDrop;
         this.CorrectFeedback = baseQuestion.CorrectFeedback;
         this.IncorrectFeedback = baseQuestion.IncorrectFeedback;
+        
+        DraggableItems = new List<DraggableItemInfo>();
+        DropZones = new List<DropZoneInfo>();
+        CorrectMatches = new List<CorrectMatch>();
     }
     
+    public int GetTotalMatches()
+    {
+        var count = 0;
+        
+        foreach (var match in CorrectMatches)
+        {
+            if(!string.IsNullOrEmpty(match.DraggableComponentName) && !string.IsNullOrEmpty(match.DropZoneComponentName))
+                count++;
+        }
+        
+        return count;
+    }
     
+    public struct DraggableItemInfo
+    {
+        public string ComponentName;
+        public string Text;
+        public string SpecialText;
+    }
+    
+    public struct DropZoneInfo
+    {
+        public string ComponentName;
+        public string Text;
+        public string SpecialText;
+    }
 }
