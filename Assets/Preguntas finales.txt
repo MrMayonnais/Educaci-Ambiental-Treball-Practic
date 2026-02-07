@@ -138,8 +138,8 @@ A<Penin
 A>PaisajeConstruido
 B<Zepa
 B>PaisajeCohetes
-C>Custodia
-C>PaisajeInvasoras
+C<Custodia
+C>PaisajeInvasores
 D<Refujio
 D>PaisajeCazadores
 +Felicitats! El Gaià t’agraeix la protecció
@@ -148,14 +148,14 @@ D>PaisajeCazadores
 *2.4
 !D
 #El riu Gaià també guarda històries. Al llarg del seu curs, les persones han construït molins, sèquies, castells, preses i fàbriques aprofitant l’aigua i la seva força.Observa les imatges i relaciona cada funció amb la construcció que li correspon
-A<Desviar%Acumular i desviar el pas de l'aigua
-A>Presa%Presa
+A<Presa%Presa
+A>Desviar%Acumular i desviar el pas de l'aigua
+B<Sequia%Sèquia
 B>Portar%Portar aigua fins als camps i pobles
-B>Sequia%Sèquia
-C<Moldre%Moldre gra aprofitant la força de l'aigua
-C>Moli%Molí
-D<Controlar%Controlar els passos de riu i el territori
-D>Castell%Castell
+C<Moli%Molí
+C>Moldre%Moldre gra aprofitant la força de l'aigua
+D<Castell%Castell
+D>Controlar%Controlar els passos de riu i el territori
 +Molt bé! El Gaià no només és natura, també ha modelat la vida i la història de les persones
 -Observa bé la construcció i pensa com intervenia l’aigua
 //
@@ -185,21 +185,21 @@ dPèrdua d’hàbitats i disminució d’espècies
 !D
 #Sense la vegetació de ribera, com el senill i el arbres de més port,  molts animals no podrien viure al Gaià, arrossega cada animal al grup del que li aporta la vegetació de ribera, dedueix què li convé més, refugi o aliment.  
 A<Rana%Granota$Pelophylax prezi
-A>Panel%Refugi, protecció i zones segures de cria
-B<pato%Ànec collverd$Anas platyrhynchos
-B>Panel%Refugi, protecció i zones segures de cria
+A>Refugi%Refugi, protecció i zones segures de cria
+B<Pato%Ànec collverd$Anas platyrhynchos
+B>Refugi%Refugi, protecció i zones segures de cria
 C<Tortuga de rierol%Tortuga de rierol$Mauremys leprosa
-C>Panel%Refugi, protecció i zones segures de cria
+C>Refugi%Refugi, protecció i zones segures de cria
 D<Polla%Polla d'aigua$Gallinula chloropus
-D>Panel%Refugi, protecció i zones segures de cria
+D>Refugi%Refugi, protecció i zones segures de cria
 E<Bagra%Bagra$Leuciscus cephalus
-E>Panel%Aliment i condicions adequades del riu
+E>Aliment%Aliment i condicions adequades del riu
 F<Libelula%Libèl·lula$Anisoptera
-F>Panel%Aliment i condicions adequades del riu
+F>Aliment%Aliment i condicions adequades del riu
 G>Anguila%guila$Anguilla anguilla
-G<Panel%Aliment i condicions adequades del riu
+G<Aliment%Aliment i condicions adequades del riu
 H<Blauet%lauet$Alcedo atthis
-H>Panel%Aliment i condicions adequades del riu
+H>Aliment%Aliment i condicions adequades del riu
 +Molt bé! Has entès com la vegetació de ribera ajuda als animals del riu Gaià a viure, alimentar-se i protegir-se.
 -Torna-ho a provar, observa bé cada animal i pensa si la vegetació li serveix més per amagar-se i criar o per trobar aliment i un riu saludable.
 //

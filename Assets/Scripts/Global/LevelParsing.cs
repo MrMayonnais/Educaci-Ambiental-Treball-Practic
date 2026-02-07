@@ -47,6 +47,7 @@ public class LevelParsing
                 }
                     
             }
+            else if(line.StartsWith("#")) question.QuestionText = line.Substring(1);
             else if (line.StartsWith("+")) question.CorrectFeedback = line.Trim('+').Trim();
             else if (line.StartsWith("-")) question.IncorrectFeedback = line.Trim('-').Trim();
         }
@@ -141,8 +142,6 @@ public class LevelParsing
         var draggableText = draggableParts.Length > 1 ? draggableParts[1] : "";
         var draggableSpecialText = draggableParts.Length > 2 ? draggableParts[2] : "";
         
-        Debug.Log("Creating Draggable: " + draggableComponentName + ", " + draggableText + ", " + draggableSpecialText);
-        
         question.DraggableItems.Add(new DragAndDropQuestion.DraggableItemInfo()
         {
             ComponentName = draggableComponentName,
@@ -155,7 +154,6 @@ public class LevelParsing
         var dropZoneText = dropZoneParts.Length > 1 ? dropZoneParts[1] : "";
         var dropZoneSpecialText = dropZoneParts.Length > 2 ? dropZoneParts[2] : "";
         
-        Debug.Log("Creating DropZone: " + dropZoneComponentName + ", " + dropZoneText + ", " + dropZoneSpecialText);
         
         question.DropZones.Add(new DragAndDropQuestion.DropZoneInfo()
         {

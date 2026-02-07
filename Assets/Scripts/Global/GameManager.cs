@@ -28,7 +28,7 @@ namespace Global
         private BaseQuestion _currentQuestion;
         private int _currentQuestionIndex;
         
-        public NewDragNDropManager dragNDropManager;
+        public DragNDropManager dragNDropManager;
         public MultiChoiceManager multiChoiceManager;
         
         private BaseQuestionManager _currentManager;
@@ -149,6 +149,7 @@ namespace Global
             else
             {
                 LoadLevel();
+                LoadQuestion(_currentLevel.Questions[_currentQuestionIndex]);
             }
         }
 
@@ -203,6 +204,7 @@ namespace Global
                 else if (question is DragAndDropQuestion dnd)
                 {
                     Debug.Log($"  Type: Drag and Drop");
+                    Debug.Log($"  Question: {dnd.QuestionText}");
                     Debug.Log($"  Draggables: {dnd.DraggableItems.Count}, DropZones: {dnd.DropZones.Count}");
                     Debug.Log($"  Correct Matches: {dnd.CorrectMatches.Count}");
                 }

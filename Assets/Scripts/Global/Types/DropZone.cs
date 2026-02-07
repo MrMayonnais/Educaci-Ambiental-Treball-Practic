@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Dlcs;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
@@ -9,9 +10,12 @@ namespace Global.Types
 {
     public class DropZone : MonoBehaviour, IDropHandler
     {
+        
+        public bool multiDropAllowed = false;
+        
         public List<DraggableItem> correctMatches;
 
-        private DraggableItem _currentItem;
+        private List<DraggableItem> _currentItems = new List<DraggableItem>();
     
         private Tween imageTween;
     
@@ -21,17 +25,17 @@ namespace Global.Types
     
         private void OnEnable()
         {
-            GameEvents.OnRestartLevel += ClearItem;
+            GameEvents.OnRestartLevel += ClearAllItems;
             GameEvents.AppearDropZoneImage += ShowImage;
-            GameEvents.ForceDisappearDropZoneImage += HideImage;
+            GameEvents.ForceDisappearDropZoneImages += HideImage;
             GameEvents.ForceItemReturn += CheckReturn;
         }
 
         public void OnDisable()
         {
-            GameEvents.OnRestartLevel -= ClearItem;
+            GameEvents.OnRestartLevel -= ClearAllItems;
             GameEvents.AppearDropZoneImage -= ShowImage;
-            GameEvents.ForceDisappearDropZoneImage -= HideImage;
+            GameEvents.ForceDisappearDropZoneImages -= HideImage;
             GameEvents.ForceItemReturn -= CheckReturn;
         }
 
@@ -41,17 +45,22 @@ namespace Global.Types
     
         public bool HasItem()
         {
-            return _currentItem != null;
+            return _currentItems.Count > 0;
         }
     
         public void SetITem(DraggableItem item)
         {
-            _currentItem = item;
+            _currentItems.Add(item);
         }
     
-        private void ClearItem()
+        private void ClearItem(DraggableItem item)
         {
-            _currentItem = null;
+            _currentItems.Remove(item);
+        }
+        
+        private void ClearAllItems()
+        {
+            _currentItems.Clear();
         }
 
         public List<DraggableItem> GetCorrectItems()
@@ -59,20 +68,45 @@ namespace Global.Types
             return correctMatches;
         }
     
-        private void ShowImage(DropZone dropZone)
+        private void ShowImage(DropZone dropZone, DraggableItem item)
         {
             if (dropZone != this) return;
-        
-            var itemImage = _currentItem.GetComponent<Image>();
+            
+            var itemImage = item.GetComponent<Image>();
             if (itemImage)
             {
                 var c = itemImage.color;
                 c.a = 0f;
                 itemImage.color = c;
             }
+
+            TextMeshProUGUI itemText = null;
+
+            if (itemImage)
+            {
+                itemText = Extensions.GetChildByName(item.gameObject, "Text")?.GetComponent<TextMeshProUGUI>();
+                if (itemText)
+                {
+                    var c = itemText.color;
+                    c.a = 0f;
+                    itemText.color = c;
+                }
+            }
+
+            if (itemText)
+            {
+                var itemSpecialText = Extensions.GetChildByName(itemText.gameObject, "Text")?
+                    .transform.Find("SpecialText")?.GetComponent<TextMeshProUGUI>();
+                if (itemSpecialText)
+                {
+                    var c = itemSpecialText.color;
+                    c.a = 0f;
+                    itemSpecialText.color = c;
+                }
+            }
         
         
-            var image = Dlcs.Extensions.GetChildByName(gameObject, "image")?.GetComponent<Image>();
+            var image = Dlcs.Extensions.GetChildByName(gameObject, "image_"+item.name)?.GetComponent<Image>();
             if(image)imageTween = Tween.Color(image, endValue: new Color(1,1,1,1), duration: 0.5f);
         }
 
@@ -81,16 +115,24 @@ namespace Global.Types
             if (dropZone != this) return;
             imageTween.Stop();
 
-            var image = Dlcs.Extensions.GetChildByName(gameObject, "image").GetComponent<Image>();
-            var c = image.color;
-            c.a = 0f;
-            image.color = c;
+            var images = dropZone.GetComponentsInChildren<Image>();
+            
+            foreach (var image in images)
+            {
+
+                if (image.gameObject == this.gameObject) continue;
+                
+                var c = image.color;
+                    c.a = 0f;
+                    image.color = c;
+                    Debug.Log("hid image: " + image.gameObject.name);
+            }
         }
 
         private void CheckReturn(DraggableItem item)
         {
-            if (item == _currentItem) 
-                ClearItem();
+            if (_currentItems.Contains(item)) 
+                ClearItem(item);
         }
 
         public void SetItemText(string text, string specialText)

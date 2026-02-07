@@ -76,7 +76,6 @@ namespace Global.Types
 
             if (dropZone != null && !dropZone.HasItem())
             {
-                Debug.Log("Dropped on drop zone " + dropZone.name);
                 transform.SetParent(dropZone.transform);
                 _rectTransform.anchoredPosition = Vector2.zero;
                 _isPlaced = true;
@@ -93,6 +92,7 @@ namespace Global.Types
         {
             if (item == this && _isPlaced)
             {
+                Debug.Log("Forcing return of item: " + gameObject.name);
                 ReturnToOriginalPosition();
             }
         }

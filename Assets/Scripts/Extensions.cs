@@ -6,7 +6,6 @@ namespace Dlcs
     {
         public static GameObject GetChildByName(GameObject parent, string childName)
         {
-            Debug.Log("Searching for child: " + childName + " under parent: " + parent.name);
             var children = parent.GetComponentsInChildren<Transform>(true);
             foreach (var child in children)
             {
