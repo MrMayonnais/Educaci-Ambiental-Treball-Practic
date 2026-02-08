@@ -164,18 +164,21 @@ namespace Global
             {
                 case GameLanguage.Catalan:
                     _currentGameData = _defaultGameData;
+                    GameEvents.LanguageChanged?.Invoke(GameLanguage.Catalan);
                     break;
                 case GameLanguage.Spanish:
                     _currentGameData = _spanishGameData;
+                    GameEvents.LanguageChanged?.Invoke(GameLanguage.Spanish);
                     break;
                 case GameLanguage.English:
                     _currentGameData = _englishGameData;
+                    GameEvents.LanguageChanged?.Invoke(GameLanguage.English);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(language), language, null);
             }
             
-            GameEvents.LanguageChanged?.Invoke();
+            
         }
         
         public enum GameLanguage

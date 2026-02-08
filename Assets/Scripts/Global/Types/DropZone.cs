@@ -18,6 +18,7 @@ namespace Global.Types
         private List<DraggableItem> _currentItems = new List<DraggableItem>();
     
         private Tween imageTween;
+        private Tween textTween;
     
         private void Start()
         {
@@ -29,6 +30,7 @@ namespace Global.Types
             GameEvents.AppearDropZoneImage += ShowImage;
             GameEvents.ForceDisappearDropZoneImages += HideImage;
             GameEvents.ForceItemReturn += CheckReturn;
+            DraggableItem.OnItemDropped += AddItem;
         }
 
         public void OnDisable()
@@ -37,6 +39,7 @@ namespace Global.Types
             GameEvents.AppearDropZoneImage -= ShowImage;
             GameEvents.ForceDisappearDropZoneImages -= HideImage;
             GameEvents.ForceItemReturn -= CheckReturn;
+            DraggableItem.OnItemDropped -= AddItem;
         }
 
         public void OnDrop(PointerEventData eventData)
@@ -47,11 +50,18 @@ namespace Global.Types
         {
             return _currentItems.Count > 0;
         }
-    
-        public void SetITem(DraggableItem item)
+        
+        public bool HasItem(DraggableItem item)
         {
-            _currentItems.Add(item);
+            return _currentItems.Contains(item);
         }
+
+        private void AddItem(DraggableItem item, DropZone dropZone)
+        {
+            if(dropZone == this)
+                _currentItems.Add(item);
+        }
+        
     
         private void ClearItem(DraggableItem item)
         {
@@ -78,6 +88,7 @@ namespace Global.Types
                 var c = itemImage.color;
                 c.a = 0f;
                 itemImage.color = c;
+                
             }
 
             TextMeshProUGUI itemText = null;
@@ -107,13 +118,19 @@ namespace Global.Types
         
         
             var image = Dlcs.Extensions.GetChildByName(gameObject, "image_"+item.name)?.GetComponent<Image>();
+            
+            var imageText = Dlcs.Extensions.GetChildByName(image?.gameObject, "Text")?.GetComponent<TextMeshProUGUI>();
+            
+            
             if(image)imageTween = Tween.Color(image, endValue: new Color(1,1,1,1), duration: 0.5f);
+            if(imageText)textTween = Tween.Color(imageText, endValue: new Color(1,1,1,1), duration: 0.5f);
         }
 
         private void HideImage(DropZone dropZone)
         {
             if (dropZone != this) return;
             imageTween.Stop();
+            textTween.Stop();
 
             var images = dropZone.GetComponentsInChildren<Image>();
             
@@ -126,13 +143,24 @@ namespace Global.Types
                     c.a = 0f;
                     image.color = c;
                     Debug.Log("hid image: " + image.gameObject.name);
+                    
+                var text = image.gameObject.transform.Find("Text")?.GetComponent<TextMeshProUGUI>();
+                if (text)
+                {
+                    var c2 = text.color;
+                    c2.a = 0f;
+                    text.color = c2;
+                }
             }
         }
 
         private void CheckReturn(DraggableItem item)
         {
-            if (_currentItems.Contains(item)) 
+            if (_currentItems.Contains(item))
+            {
+                item.VisibleText();
                 ClearItem(item);
+            }
         }
 
         public void SetItemText(string text, string specialText)

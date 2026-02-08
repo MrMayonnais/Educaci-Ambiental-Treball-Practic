@@ -220,6 +220,7 @@ namespace Global.QuestionManagers
         {
             var layoutNumber = "layout" + _currentQuestion.LevelNumber + "." + _currentQuestion.QuestionNumber;
             
+            
             foreach (var layout in layouts)
             {
                 if (layout.name == layoutNumber)
@@ -228,7 +229,8 @@ namespace Global.QuestionManagers
                     return layout;
                 }
                 
-                else layout.SetActive(false);
+                layout.SetActive(false);
+                
             }
 
             return null;

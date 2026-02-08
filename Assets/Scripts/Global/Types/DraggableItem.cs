@@ -74,16 +74,17 @@ namespace Global.Types
                 dropZone = eventData.pointerEnter.GetComponent<DropZone>();
             }
 
-            if (dropZone != null && !dropZone.HasItem())
+            if (dropZone != null && !dropZone.HasItem(this))
             {
                 transform.SetParent(dropZone.transform);
                 _rectTransform.anchoredPosition = Vector2.zero;
                 _isPlaced = true;
-                dropZone.SetITem(this);
+                _canvasGroup.blocksRaycasts = false;
                 OnItemDropped?.Invoke(this, dropZone);
             }
             else
             {
+                Debug.Log("Item not dropped on a valid drop zone, returning to original position: " + gameObject.name);
                 ReturnToOriginalPosition();
             }
         }
@@ -121,6 +122,26 @@ namespace Global.Types
                 if (specialTextComponent != null)
                 {
                     specialTextComponent.text = specialText;
+                }
+            }
+        }
+
+        public void VisibleText()
+        {
+            var textComponent = Dlcs.Extensions.GetChildByName(gameObject, "Text")?.GetComponent<TextMeshProUGUI>();
+            if (textComponent != null)
+            {
+                var c = textComponent.color;
+                c.a = 1f;
+                textComponent.color = c;
+
+                var specialTextComponent = Dlcs.Extensions.GetChildByName(textComponent.gameObject, "SpecialText")
+                    ?.GetComponent<TextMeshProUGUI>();
+                if (specialTextComponent != null)
+                {
+                    var sc = specialTextComponent.color;
+                    sc.a = 1f;
+                    specialTextComponent.color = sc;
                 }
             }
         }

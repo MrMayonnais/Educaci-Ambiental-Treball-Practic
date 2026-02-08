@@ -1,4 +1,5 @@
 ﻿using System;
+using Dlcs;
 using Global.Types;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Global
         public static Action<DraggableItem> ForceItemReturn;
         public static Action<DropZone> ForceDisappearDropZoneImages;
         
-        public static Action LanguageChanged;
+        public static Action<GameManager.GameLanguage> LanguageChanged;
         public static Action<BaseQuestion> LoadQuestion;
 
     }

@@ -196,14 +196,15 @@ E<Bagra%Bagra$Leuciscus cephalus
 E>Aliment%Aliment i condicions adequades del riu
 F<Libelula%Libèl·lula$Anisoptera
 F>Aliment%Aliment i condicions adequades del riu
-G>Anguila%guila$Anguilla anguilla
-G<Aliment%Aliment i condicions adequades del riu
-H<Blauet%lauet$Alcedo atthis
+G<Anguila%Aguila$Anguilla anguilla
+G>Aliment%Aliment i condicions adequades del riu
+H<Blauet%Blauet$Alcedo atthis
 H>Aliment%Aliment i condicions adequades del riu
 +Molt bé! Has entès com la vegetació de ribera ajuda als animals del riu Gaià a viure, alimentar-se i protegir-se.
 -Torna-ho a provar, observa bé cada animal i pensa si la vegetació li serveix més per amagar-se i criar o per trobar aliment i un riu saludable.
 //
 *3.4
+!M
 #Quina relació hi ha entre els abocaments contaminants i la fauna del riu Gaià?
 aEls abocaments no tenen cap efecte
 bPoden reduir l’oxigen, provocant la mort de peixos i invertebrats 
@@ -214,6 +215,7 @@ dMillora la biodiversitat del riu
 -Recorda que la contaminació no pot millorar el riu
 //
 *3.5
+!M
 #Al tram baix del riu Gaià, la velocitat de l’aigua és menor, principalment perquè... 
 aEl pendent és més suau
 bHi ha menys cascades

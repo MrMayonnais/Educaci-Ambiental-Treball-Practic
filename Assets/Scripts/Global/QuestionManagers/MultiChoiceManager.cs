@@ -118,16 +118,16 @@ namespace Global.QuestionManagers
 
         private void GetComponents()
         {
-            _optionAButton = optionA.GetComponentInChildren<Button>();
-            _optionBButton = optionB.GetComponentInChildren<Button>();
-            _optionCButton = optionC.GetComponentInChildren<Button>();
-            _optionDButton = optionD.GetComponentInChildren<Button>();
+            _optionAButton = optionA.GetComponentInChildren<Button>(true);
+            _optionBButton = optionB.GetComponentInChildren<Button>(true);
+            _optionCButton = optionC.GetComponentInChildren<Button>(true);
+            _optionDButton = optionD.GetComponentInChildren<Button>(true);
         
-            _questionText = questionPanel.GetComponentInChildren<TextMeshProUGUI>();
+            _questionText = questionPanel.GetComponentInChildren<TextMeshProUGUI>(true);
         
         
         
-            _feedbackText = feedbackPanel.GetComponentInChildren<TextMeshProUGUI>();
+            _feedbackText = feedbackPanel.GetComponentInChildren<TextMeshProUGUI>(true);
         }
     
         private void InitializeComponents()
