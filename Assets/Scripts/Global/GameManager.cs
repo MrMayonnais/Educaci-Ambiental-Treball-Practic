@@ -1,7 +1,9 @@
 ﻿using System;
+using Dlcs;
 using Global.QuestionManagers;
 using UnityEngine;
 using Global.Types;
+using PrimeTween;
 using Unity.VisualScripting;
 using UnityEngine.Serialization;
 
@@ -30,6 +32,7 @@ namespace Global
         
         public DragNDropManager dragNDropManager;
         public MultiChoiceManager multiChoiceManager;
+        public IntroManager introManager;
         
         private BaseQuestionManager _currentManager;
         
@@ -44,6 +47,12 @@ namespace Global
             _currentLevelIndex = startLevel;
             _currentQuestionIndex = startQuestion;
             
+            introManager.PlayNextSlide();
+            
+        }
+
+        private void StartLevel()
+        {
             LoadLevel();
             LoadQuestion(_currentLevel.Questions[_currentQuestionIndex]);
         }
@@ -53,6 +62,7 @@ namespace Global
             GameEvents.OnNextQuestion += NextQuestion;
             GameEvents.OnRestartLevel += RestartLevel;
             //GameEvents.LanguageChanged += ChangeLanguageTo;
+            GameEvents.OnStartLevel += StartLevel;
         }
         
         private void OnDisable()
@@ -60,6 +70,7 @@ namespace Global
             GameEvents.OnNextQuestion -= NextQuestion;
             GameEvents.OnRestartLevel -= RestartLevel;
             //GameEvents.LanguageChanged -= ChangeLanguageTo;
+            GameEvents.OnStartLevel -= StartLevel;
         }
 
         private void LoadLevel()
@@ -148,8 +159,15 @@ namespace Global
             }
             else
             {
-                LoadLevel();
-                LoadQuestion(_currentLevel.Questions[_currentQuestionIndex]);
+                
+                var originalPosition = _currentManager.transform.position;
+                Tween.PositionY(_currentManager.transform,
+                    originalPosition.y,
+                    originalPosition.y + Screen.height,
+                    2f, Easing.Standard(Ease.InOutCubic)).OnComplete(() =>
+                    {
+                        introManager.PlayNextSlide();
+                    });
             }
         }
 

@@ -1,4 +1,5 @@
 using System;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,6 +15,8 @@ namespace Global.Types
         private Vector2 _originalPosition;
         private Transform _originalParent;
         private bool _isPlaced;
+        
+        private Tween _returnTween;
     
         public static Action<DraggableItem, DropZone> OnItemDropped;
 
@@ -103,12 +106,17 @@ namespace Global.Types
             gameObject.SetActive(true);
         
             transform.SetParent(_originalParent);
-            _rectTransform.position = _originalPosition;
             _isPlaced = false;
-            _canvasGroup.blocksRaycasts = true;
+            _canvasGroup.blocksRaycasts = false;
             var c = GetComponent<Image>().color;
             c.a = 1f;
             GetComponent<Image>().color = c;
+
+            _returnTween.Stop();
+            _returnTween = Tween.Position(_rectTransform, _originalPosition, 0.5f, Easing.Overshoot(0.5f)).OnComplete(() =>
+            {
+                _canvasGroup.blocksRaycasts = true;
+            });
         }
     
         public void SetItemText(string text, string specialText)

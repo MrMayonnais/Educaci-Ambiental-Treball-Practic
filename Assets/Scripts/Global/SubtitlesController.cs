@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Dlcs;
 using Global;
 using TMPro;
@@ -14,30 +15,43 @@ public class SubtitlesController : MonoBehaviour
 
     private TextMeshProUGUI _subtitleText;
 
+    public TextAsset catSubtitles;
+    public TextAsset englishSubtitles;
+    public TextAsset spanishSubtitles;
+
     private GameManager.GameLanguage _currentLanguage = GameManager.GameLanguage.Catalan;
 
     [SerializeField] private float typingSpeed = 0.05f;
 
     private Coroutine _typingCoroutine;
 
-    private void Start()
+    private void Awake()
     {
         _subtitleText = subtitlePanel.GetComponentInChildren<TextMeshProUGUI>();
+
+        _introSubtitles = new IntroSubtitles()
+        {
+            CatSlides = ParseSubtitlesFromText(catSubtitles.text),
+            CastSlides = ParseSubtitlesFromText(spanishSubtitles.text),
+            EngSlides = ParseSubtitlesFromText(englishSubtitles.text)
+        };
     }
 
     private void OnEnable()
     {
-        
+        GameEvents.LanguageChanged += ChangeLanguage;
     }
 
     private void OnDisable()
     {
+        GameEvents.LanguageChanged -= ChangeLanguage;
         StopTyping();
     }
     
     public void PlaySubtitles(int slideIndex)
     {
-        string textToDisplay = GetSubtitleForSlide(slideIndex);
+        var textToDisplay = GetSubtitleForSlide(slideIndex);
+        
         if (!string.IsNullOrEmpty(textToDisplay))
         {
             ShowSubtitle(textToDisplay);
@@ -87,13 +101,32 @@ public class SubtitlesController : MonoBehaviour
         switch (_currentLanguage)
         {
             case GameManager.GameLanguage.Spanish:
+                
                 return _introSubtitles.CastSlides[slideIndex];
             case GameManager.GameLanguage.English:
+                
                 return _introSubtitles.EngSlides[slideIndex];
             case GameManager.GameLanguage.Catalan:
             default:
-                return _introSubtitles.CastSlides[slideIndex];
+                
+                return _introSubtitles.CatSlides[slideIndex];
         }
+    }
+
+    private List<string> ParseSubtitlesFromText(string text)
+    {
+        var blocks = new List<string>(text.Trim().Split("//"));
+        
+
+        return blocks
+            .Where(block => !string.IsNullOrEmpty(block))
+            .Select(block => block.Trim())
+            .ToList();
+    }
+    
+    private void ChangeLanguage(GameManager.GameLanguage language)
+    {
+        _currentLanguage = language;
     }
     
     public class IntroSubtitles

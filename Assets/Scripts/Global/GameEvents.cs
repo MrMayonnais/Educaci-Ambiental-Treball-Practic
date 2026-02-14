@@ -7,6 +7,8 @@ namespace Global
 {
     public class GameEvents
     {
+        
+        public static Action OnStartLevel;
         public static Action OnRestartLevel;
         public static Action OnNextQuestion;
         public static Action<DropZone, DraggableItem> AppearDropZoneImage;
