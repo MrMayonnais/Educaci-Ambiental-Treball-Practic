@@ -6,6 +6,7 @@ using Global.Types;
 using PrimeTween;
 using Unity.VisualScripting;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Global
 {
@@ -14,6 +15,8 @@ namespace Global
         [SerializeField] private TextAsset defaultQuestionsFile;
         [SerializeField] private TextAsset spanishQuestionsFile;
         [SerializeField] private TextAsset englishQuestionsFile;
+        
+        public Image fadeImage;
         
         public int startLevel = 1;
         public int startQuestion = 0;
@@ -32,9 +35,10 @@ namespace Global
         
         public DragNDropManager dragNDropManager;
         public MultiChoiceManager multiChoiceManager;
-        public IntroManager introManager;
         
         private BaseQuestionManager _currentManager;
+        
+        private Tween _fadeTween;
         
         private void Start()
         {
@@ -46,42 +50,52 @@ namespace Global
 
             _currentLevelIndex = startLevel;
             _currentQuestionIndex = startQuestion;
+            _currentLevel = _currentGameData.Levels[_currentLevelIndex];
             
-            introManager.PlayNextSlide();
+            Begin();
             
+        }
+
+        private void Begin()
+        {
+            AnimateEntrance();
         }
 
         private void StartLevel()
         {
             LoadLevel();
-            LoadQuestion(_currentLevel.Questions[_currentQuestionIndex]);
+            AnimateSlideExit();
         }
 
         private void OnEnable()
         {
             GameEvents.OnNextQuestion += NextQuestion;
             GameEvents.OnRestartLevel += RestartLevel;
-            //GameEvents.LanguageChanged += ChangeLanguageTo;
+            GameEvents.LanguageChanged += ChangeLanguageTo;
             GameEvents.OnStartLevel += StartLevel;
+            GameEvents.OnNextLevel += NextLevel;
         }
         
         private void OnDisable()
         {
             GameEvents.OnNextQuestion -= NextQuestion;
             GameEvents.OnRestartLevel -= RestartLevel;
-            //GameEvents.LanguageChanged -= ChangeLanguageTo;
+            GameEvents.LanguageChanged -= ChangeLanguageTo;
             GameEvents.OnStartLevel -= StartLevel;
+            GameEvents.OnNextLevel -= NextLevel;
         }
 
         private void LoadLevel()
         {
             _currentLevel = _currentGameData.Levels[_currentLevelIndex];
-            PrintLevelQuestions(_currentLevel);
+            LoadQuestion(_currentLevel.Questions[_currentQuestionIndex]);
         }
 
         private void LoadQuestion(BaseQuestion question)
         {
+            Debug.Log("Loading Question: " + question.QuestionText+ " with type " + question.Type);
             _currentQuestion = question;
+            
             var t = GetCurrentManager();
             
             if (_currentManager != t || !_currentManager)
@@ -117,13 +131,11 @@ namespace Global
                 if (activeManager != dragNDropManager)
                 {
                     dragNDropManager.gameObject.SetActive(false);
-                    Debug.Log("Disabling DragNDropManager");
                 }
 
                 if (activeManager != multiChoiceManager)
                 {
                     multiChoiceManager.gameObject.SetActive(false);
-                    Debug.Log("Disabling MultiChoiceManager");
                 }
             }
         }
@@ -131,6 +143,7 @@ namespace Global
         private void NextQuestion()
         {
             _currentQuestionIndex++;
+            
             
             if (_currentQuestionIndex>= _currentLevel.Questions.Count)
             {
@@ -153,21 +166,28 @@ namespace Global
         private void NextLevel()
         {
             _currentLevelIndex++;
+    
             if (_currentLevelIndex >= _defaultGameData.Levels.Count)
             {
                 EndGame();
             }
             else
             {
-                
+                if (_currentManager == null)
+                {
+                    Debug.LogWarning("No current manager found.");
+                    return;
+                }
+        
                 var originalPosition = _currentManager.transform.position;
                 Tween.PositionY(_currentManager.transform,
                     originalPosition.y,
                     originalPosition.y + Screen.height,
                     2f, Easing.Standard(Ease.InOutCubic)).OnComplete(() =>
-                    {
-                        introManager.PlayNextSlide();
-                    });
+                {
+                    _currentQuestionIndex = 0;
+                    AnimateExit();
+                });
             }
         }
 
@@ -206,32 +226,40 @@ namespace Global
             English
         }
         
-        private void PrintLevelQuestions(LevelData level)
+
+        private void AnimateExit()
         {
-            Debug.Log($"=== Level {level.LevelNumber} ===");
-            Debug.Log($"Total Questions: {level.Questions.Count}");
-
-            foreach (var question in level.Questions)
+            fadeImage.gameObject.SetActive(true);
+            if(_fadeTween.isAlive) _fadeTween.Stop();
+            _fadeTween = Tween.Alpha(fadeImage, 0, 1, 1f, Easing.Standard(Ease.InOutCubic)).OnComplete(() =>
             {
-                Debug.Log($"\nQuestion {question.QuestionNumber}:");
+                GameEvents.OnAppearSlide?.Invoke();
+            });
+        }
 
-                if (question is MultiChoiceQuestion mcq)
-                {
-                    Debug.Log($"  Type: Multiple Choice");
-                    Debug.Log($"  Question: {mcq.QuestionText}");
-                    Debug.Log($"  Options: a) {mcq.OptionA}, b) {mcq.OptionB}, c) {mcq.OptionC}, d) {mcq.OptionD}");
-                    Debug.Log($"  Correct Answer: {mcq.CorrectAnswer}");
-                }
-                else if (question is DragAndDropQuestion dnd)
-                {
-                    Debug.Log($"  Type: Drag and Drop");
-                    Debug.Log($"  Question: {dnd.QuestionText}");
-                    Debug.Log($"  Draggables: {dnd.DraggableItems.Count}, DropZones: {dnd.DropZones.Count}");
-                    Debug.Log($"  Correct Matches: {dnd.CorrectMatches.Count}");
-                }
+        private void AnimateSlideExit()
+        {
+            GameEvents.PlayGameMusic ?.Invoke();
+            GameEvents.ChangeQuestionBackground?.Invoke();
+            
+            
+            if (_fadeTween.isAlive) _fadeTween.Stop();
+            _fadeTween = Tween.Alpha(fadeImage, 
+                1f, 0f, .5f, 
+                Easing.Standard(Ease.InOutCubic)).OnComplete(() =>
+            {
+                fadeImage.gameObject.SetActive(false);
+            });
+        }
 
-                Debug.Log("---");
-            }
+        private void AnimateEntrance()
+        {
+            if(_fadeTween.isAlive) _fadeTween.Stop();
+            _fadeTween = Tween.Alpha(fadeImage, 1, 0, .5f, Easing.Standard(Ease.InOutCubic)).OnComplete(() =>
+            {
+                fadeImage.gameObject.SetActive(false);
+                GameEvents.OnAppearSlide?.Invoke();
+            });
         }
     }
 }
